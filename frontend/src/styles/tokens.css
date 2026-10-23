@@ -1,0 +1,330 @@
+/* ==========================================================================
+   AP ESSENTIAL COMMODITIES PRICE INTELLIGENCE & AUTONOMOUS STABILISATION
+   Production Design System: iOS 26 Liquid Glass Architecture
+   Strict Typography System:
+     - Google Sans: Primary UI, navigation, buttons, controls, running body
+     - Times New Roman: Editorial display, titles, memos, italic emphasis
+     - Space Grotesk: Metrics, numbers, currency, percentages, eyebrows, tags
+   Surface Experience: iOS 26 Liquid Glass (blur 28px, saturate 210%, specular highlights)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Canvas & Liquid Glass Surfaces */
+  --color-canvas: #fbfbf9;
+  --color-canvas-pure: #ffffff;
+  --color-surface-soft: rgba(245, 245, 242, 0.7);
+  --color-glass-base: rgba(255, 255, 255, 0.65);
+  --color-glass-elevated: rgba(255, 255, 255, 0.82);
+  --color-glass-dark: rgba(22, 21, 19, 0.78);
+  --color-glass-dark-elevated: rgba(32, 30, 27, 0.88);
+
+  /* Primary Accent Colors */
+  --color-primary: #0066cc; /* Apple Action Blue */
+  --color-primary-focus: #0071e3;
+  --color-primary-soft: rgba(0, 102, 204, 0.08);
+  --color-terracotta: #cc785c; /* Claude Coral */
+  --color-terracotta-active: #a9583e;
+  --color-terracotta-soft: rgba(204, 120, 92, 0.12);
+
+  /* Ink & Typography */
+  --color-ink: #111113;
+  --color-ink-secondary: #3c3c40;
+  --color-ink-muted: #6e6e73;
+  --color-ink-faint: #98989d;
+  --color-on-dark: #faf9f5;
+  --color-on-dark-muted: #a1a1a6;
+
+  /* Specular Highlight Borders (iOS 26 Liquid Glass) */
+  --glass-border: 1px solid rgba(255, 255, 255, 0.6);
+  --glass-border-subtle: 1px solid rgba(0, 0, 0, 0.06);
+  --glass-border-dark: 1px solid rgba(255, 255, 255, 0.12);
+
+  /* Pastel Liquid Glass Accents */
+  --glass-mint-bg: rgba(200, 230, 205, 0.4);
+  --glass-mint-border: rgba(18, 64, 25, 0.15);
+  --glass-mint-ink: #11401a;
+
+  --glass-coral-bg: rgba(243, 201, 182, 0.4);
+  --glass-coral-border: rgba(198, 69, 69, 0.18);
+  --glass-coral-ink: #5e1a1a;
+
+  --glass-lilac-bg: rgba(197, 176, 244, 0.35);
+  --glass-lilac-border: rgba(43, 23, 84, 0.15);
+  --glass-lilac-ink: #2b1754;
+
+  --glass-cream-bg: rgba(244, 236, 214, 0.45);
+  --glass-cream-border: rgba(92, 69, 10, 0.15);
+  --glass-cream-ink: #4d3a08;
+
+  --glass-azure-bg: rgba(0, 102, 204, 0.1);
+  --glass-azure-border: rgba(0, 102, 204, 0.25);
+  --glass-azure-ink: #0052a3;
+
+  /* Status Tokens */
+  --status-normal: #1ea64a;
+  --status-watch: #d4a017;
+  --status-critical: #c64545;
+
+  /* STRICT TYPOGRAPHY STACK: ONLY GOOGLE SANS, TIMES NEW ROMAN, SPACE GROTESK */
+  --font-sans: 'Google Sans', 'Open Sans', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Times New Roman', Times, serif;
+  --font-mono: 'Space Grotesk', ui-monospace, monospace;
+
+  /* Corner Radii */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 26px;
+  --radius-pill: 9999px;
+
+  /* Liquid Glass Layered Shadows */
+  --shadow-liquid-subtle: inset 0 1px 1px 0 rgba(255, 255, 255, 0.7), 0 4px 16px -2px rgba(0, 0, 0, 0.04);
+  --shadow-liquid: inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.8), 0 12px 36px -4px rgba(0, 0, 0, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
+  --shadow-liquid-floating: inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.9), 0 20px 48px -8px rgba(0, 0, 0, 0.1), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+}
+
+/* Base Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-ink);
+  background-color: var(--color-canvas);
+  background-image: 
+    radial-gradient(at 15% 15%, rgba(0, 102, 204, 0.03) 0px, transparent 50%),
+    radial-gradient(at 85% 85%, rgba(204, 120, 92, 0.03) 0px, transparent 50%),
+    radial-gradient(at 50% 50%, rgba(200, 230, 205, 0.02) 0px, transparent 50%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+/* iOS 26 Liquid Glass Navigation Bar */
+.liquid-nav {
+  position: sticky;
+  top: 14px;
+  margin: 0 auto;
+  max-width: 1440px;
+  width: calc(100% - 32px);
+  z-index: 200;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(28px) saturate(210%) brightness(102%);
+  -webkit-backdrop-filter: blur(28px) saturate(210%) brightness(102%);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-liquid);
+  padding: 8px 18px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Strict Typography Classes */
+.display-title {
+  font-family: var(--font-serif);
+  font-size: 38px;
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  color: var(--color-ink);
+}
+
+.display-title-italic {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 38px;
+  font-weight: 400;
+  line-height: 1.12;
+  color: var(--color-ink);
+}
+
+.section-title {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--color-ink);
+}
+
+.section-title-italic {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--color-ink);
+}
+
+.eyebrow-tag {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-ink-muted);
+}
+
+.metric-number {
+  font-family: var(--font-mono);
+  font-feature-settings: "tnum" 1;
+}
+
+/* iOS 26 Liquid Glass Containers */
+.liquid-glass {
+  background: var(--color-glass-base);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-liquid);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.liquid-glass:hover {
+  border-color: rgba(255, 255, 255, 0.95);
+  box-shadow: var(--shadow-liquid-floating);
+}
+
+.liquid-glass-elevated {
+  background: var(--color-glass-elevated);
+  backdrop-filter: blur(28px) saturate(210%);
+  -webkit-backdrop-filter: blur(28px) saturate(210%);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-liquid-floating);
+}
+
+.liquid-glass-dark {
+  background: var(--color-glass-dark);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: var(--glass-border-dark);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 16px 40px -6px rgba(0, 0, 0, 0.25);
+  color: var(--color-on-dark);
+}
+
+/* Liquid Glass Buttons & Pill Actions */
+.btn-liquid {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-size: 14.5px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.btn-liquid:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.28);
+}
+.btn-primary:hover {
+  background: var(--color-primary-focus);
+  box-shadow: 0 4px 14px rgba(0, 102, 204, 0.35);
+}
+
+.btn-glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: var(--color-ink);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: var(--shadow-liquid-subtle);
+}
+.btn-glass:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: #ffffff;
+}
+
+.btn-terracotta {
+  background: var(--color-terracotta);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(204, 120, 92, 0.28);
+}
+.btn-terracotta:hover {
+  background: var(--color-terracotta-active);
+  box-shadow: 0 4px 14px rgba(204, 120, 92, 0.35);
+}
+
+/* Liquid Glass Badges */
+.badge-glass {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.badge-mint {
+  background: var(--glass-mint-bg);
+  border: 1px solid var(--glass-mint-border);
+  color: var(--glass-mint-ink);
+}
+
+.badge-coral {
+  background: var(--glass-coral-bg);
+  border: 1px solid var(--glass-coral-border);
+  color: var(--glass-coral-ink);
+}
+
+.badge-lilac {
+  background: var(--glass-lilac-bg);
+  border: 1px solid var(--glass-lilac-border);
+  color: var(--glass-lilac-ink);
+}
+
+.badge-cream {
+  background: var(--glass-cream-bg);
+  border: 1px solid var(--glass-cream-border);
+  color: var(--glass-cream-ink);
+}
+
+.badge-azure {
+  background: var(--glass-azure-bg);
+  border: 1px solid var(--glass-azure-border);
+  color: var(--glass-azure-ink);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.14);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.24);
+}
