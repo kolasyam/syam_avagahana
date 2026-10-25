@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AP Essential Commodities — Platform Architecture</title>
+<style>
+  :root{
+    --ink:#1d2433; --sub:#4c5a70; --muted:#8a97ab; --line:#dfe6f0;
+    --blue:#2f6fd0; --indigo:#4353b1; --lilac:#7b5ea7; --terra:#d4674c;
+    --green:#1f8a70; --slate:#4a5568; --gold:#b3863a;
+    --card:rgba(255,255,255,.92);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    background:linear-gradient(160deg,#eef2f8 0%,#f7f9fc 55%,#e9edf6 100%);
+    font-family:'Segoe UI',Arial,sans-serif; color:var(--ink);
+    width:2140px; margin:0 auto; padding:34px 44px 40px;
+  }
+  /* ---------- header ---------- */
+  .hero{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:22px;}
+  .hero h1{font-size:40px;font-weight:700;letter-spacing:-.5px;}
+  .hero h1 span{color:var(--terra);}
+  .hero .sub{font-size:19px;color:var(--sub);margin-top:8px;}
+  .badges{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;}
+  .badge{font-size:15px;font-weight:600;padding:9px 16px;border-radius:999px;background:#fff;border:1.5px solid var(--line);box-shadow:0 2px 6px rgba(20,30,50,.06);display:flex;align-items:center;gap:8px;}
+  .badge.green{border-color:#bfe4d8;color:#14614f;}
+  .badge.gold{border-color:#ecd9ae;color:#7d5c1c;}
+  /* ---------- generic row/card ---------- */
+  .row{display:grid;gap:18px;margin:0;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 8px 22px rgba(25,35,60,.07);padding:20px 22px;}
+  .band{font-size:14px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#fff;padding:11px 18px;border-radius:12px;display:inline-flex;align-items:center;gap:10px;box-shadow:0 4px 10px rgba(25,35,60,.12);}
+  .chiprow{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px;}
+  .chip{font-size:15.5px;background:#f3f6fb;border:1px solid var(--line);border-radius:10px;padding:8px 13px;display:inline-flex;align-items:center;gap:8px;color:var(--ink);}
+  .chip b{font-weight:700;}
+  .mini{font-size:13.5px;color:var(--muted);margin-top:10px;line-height:1.5;}
+  /* ---------- flow arrow between rows ---------- */
+  .flow{display:flex;justify-content:center;margin:14px 0;}
+  .flow .pill{display:inline-flex;align-items:center;gap:10px;background:#1d2433;color:#e8eefb;font-size:15.5px;font-weight:600;padding:8px 20px;border-radius:999px;}
+  .flow .pill .n{font-size:17px;color:#ffd77a;}
+  .flow .pill .ced{color:#ffd77a;}
+  /* ---------- layer accent colors ---------- */
+  .l-front{background:linear-gradient(90deg,var(--blue),#4d90e0);}
+  .l-api{background:linear-gradient(90deg,var(--indigo),#7a86d8);}
+  .l-chat{background:linear-gradient(90deg,var(--lilac),#a488cf);}
+  .l-agents{background:linear-gradient(90deg,var(--terra),#e08a6e);}
+  .l-core{background:linear-gradient(90deg,var(--green),#4aae92);}
+  .l-data{background:linear-gradient(90deg,var(--slate),#7a869c);}
+  .l-ext{background:linear-gradient(90deg,var(--gold),#d1ab63);}
+  /* ---------- header (band header) row ---------- */
+  .bhead{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+  .bhead .title{font-size:21px;font-weight:700;}
+  .bhead .hint{font-size:14.5px;color:var(--muted);}
+  /* ================= ROW A : frontend ================= */
+  .grid3{grid-template-columns:1fr 1fr 1fr;}
+  .ftab{border-top:5px solid var(--blue);}
+  .ftab .ic{font-size:34px;}
+  .ftab h3{font-size:20px;margin-top:8px;}
+  .ftab ul{list-style:none;margin-top:12px;display:flex;flex-direction:column;gap:9px;}
+  .ftab li{font-size:15.5px;line-height:1.45;color:var(--sub);display:flex;gap:9px;}
+  .ftab li .e{flex:0 0 22px;text-align:center;}
+  /* ================= ROW B : api ================= */
+  .api-strip{border-top:5px solid var(--indigo);}
+  /* ================= ROW C : engines ================= */
+  .grid2{grid-template-columns:1.02fr 1fr;}
+  .metric{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:start;margin-top:12px;}
+  .metric .ic{font-size:26px;text-align:center;background:#f2f4fa;border:1px solid var(--line);border-radius:12px;padding:9px 0;}
+  .metric h4{font-size:16.5px;}
+  .metric p{font-size:14.5px;color:var(--sub);margin-top:3px;line-height:1.5;}
+  /* agent stage chips */
+  .stages{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px;}
+  .stage{border-radius:11px;padding:9px 13px;font-size:14.5px;border:1px solid var(--line);background:#faf7f4;display:flex;gap:8px;align-items:center;}
+  .stage b{font-family:Consolas,monospace;font-size:12px;color:var(--terra);}
+  /* governance row */
+  .gov{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+  .govchip{font-size:14.5px;border-radius:10px;padding:8px 13px;border:1.5px dashed #c9d3e2;background:#f4f7fd;display:inline-flex;gap:8px;align-items:center;color:var(--sub);}
+  /* ================= ROW D : core ================= */
+  .coregrid{grid-template-columns:1fr 1fr 1fr;}
+  .corecard .metric .ic{background:#eef7f3;}
+  /* ================= ROW E : data ================= */
+  .datacard .metric .ic{background:#f1f3f8;}
+  /* ================= footer ================= */
+  .foot{margin-top:18px;border-top:5px solid var(--gold);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+  .footleft{display:flex;align-items:center;gap:14px;}
+  .foot .band{font-size:13px;letter-spacing:2px;padding:9px 16px;}
+  .whoami{font-size:14.5px;color:var(--muted);}
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<div class="hero">
+  <div>
+    <h1>🧅 AP Essential Commodities — <span>Agentic Onion Intelligence Platform</span></h1>
+    <div class="sub">Zero-shot foundation forecasting + governed agent workflow + grounded local chat — running on <b>real AGMARKNET-derived data, zero synthetic rows</b></div>
+  </div>
+  <div class="badges">
+    <div class="badge green">✅ 18/18 tests green</div>
+    <div class="badge green">🧾 6,851 real price rows · 22,591 context rows</div>
+    <div class="badge gold">🛌 Offline-survivable demo</div>
+    <div class="badge gold">📅 Live client demo · Wed Oct 28</div>
+  </div>
+</div>
+
+<!-- ============ ROW A : USER SURFACE ============ -->
+<div class="row grid3">
+  <div class="card ftab">
+    <div class="ic">&#128421;&#65039;</div>
+    <h3>Executive Workspace <div class="hint" style="display:inline;font-size:13px;color:var(--muted);">/tab 1</div></h3>
+    <ul>
+      <li><span class="e">&#127919;</span><span>Autonomous investigation console — one click runs the full <b>Sense &#8594; Predict &#8594; Simulate &#8594; Act &#8594; Learn</b> pipeline</span></li>
+      <li><span class="e">&#127908;</span><span>Server-Sent Events: 8 agent cards stream <b>finding &#183; evidence &#183; next-step</b> in real time (no fake delays)</span></li>
+      <li><span class="e">&#128202;</span><span>Executive synthesis quad: spot modal &#183; forecast peak &#183; breach risk &#183; scenario mitigation — same numbers as chat</span></li>
+    </ul>
+  </div>
+  <div class="card ftab">
+    <div class="ic">&#128200;</div>
+    <h3>Forecast &amp; Risk Intelligence <div class="hint" style="display:inline;font-size:13px;color:var(--muted);">/tab 2</div></h3>
+    <ul>
+      <li><span class="e">&#9726;</span><span>Chronos-2 median path with <b>80% / 95% quantile cones</b>; horizon pills 7/14/30/60/90 days</span></li>
+      <li><span class="e">&#4322;&#65039;</span><span>State switcher: AP primary + MH / KA / MP comparators — all served from the <b>pre-computed real cache</b></span></li>
+      <li><span class="e">&#129514;</span><span>Rolling-backtest table (<b>real WAPE / MAE / coverage</b>) with auto-generated honesty notes</span></li>
+    </ul>
+  </div>
+  <div class="card ftab">
+    <div class="ic">&#128172;</div>
+    <h3>Agentic Chat <div class="hint" style="display:inline;font-size:13px;color:var(--muted);">/tab 3</div></h3>
+    <ul>
+      <li><span class="e">&#9889;</span><span><b>Auto-warm on page open</b> — local LLM loaded before the CEO types anything</span></li>
+      <li><span class="e">&#129302;</span><span>Streaming tokens + <b>live tool-trace chips</b> (agent &#8594; tool call &#8594; grounded answer)</span></li>
+      <li><span class="e">&#128737;&#65039;</span><span>Trust-badged sources, audit trail row, 5 scripted demo prompts as quick chips</span></li>
+    </ul>
+  </div>
+</div>
+
+<div class="flow"><span class="pill"><span class="n">&#9312;</span> REST + SSE over <b>&nbsp;http://127.0.0.1:8000/api/v1</b> <span class="ced">&#9660;</span></span></div>
+
+<!-- ============ ROW B : API LAYER ============ -->
+<div class="card api-strip">
+  <div class="bhead">
+    <span class="band l-api">&#128013; FastAPI Backend — uvicorn :8000
+    </span>
+    <span class="hint">single process · CLI launcher <b>run_api.bat</b> · hard-wired absolute SQLite path · CORS locked to :5173</span>
+  </div>
+  <div class="chiprow">
+    <span class="chip">&#127908; <b>/investigate</b> — workflow SSE stream</span>
+    <span class="chip">&#128172; <b>/chat/health&#183;warm&#183;stream</b> — LLM health, warm-up, SSE copilot</span>
+    <span class="chip">&#9889; <b>/forecast/latest</b> — cache-first instant serve</span>
+    <span class="chip">&#128295; <b>/forecast/run</b> — live compute (champion &#8594; fallback chain)</span>
+    <span class="chip">&#129514; <b>/forecast/backtest</b> — real backtest report</span>
+    <span class="chip">&#128680; <b>/risk/latest</b> — quantile-ladder probability sheet</span>
+    <span class="chip">&#127757; <b>/web/lookup</b> — Tavily gate, citation-only</span>
+    <span class="chip">&#127758; <b>/scenarios/simulate</b> — deterministic what-if</span>
+    <span class="chip">&#128202; <b>/observations + /analytics</b></span>
+    <span class="chip">&#128274; <b>/sources &#183; /audit/events</b></span>
+  </div>
+</div>
+
+<div class="flow"><span class="pill"><span class="n">&#9313;</span> dispatches to two agent engines <span class="ced">&#9660;</span></span></div>
+
+<!-- ============ ROW C : ENGINES ============ -->
+<div class="row grid2">
+  <!-- chat engine -->
+  <div class="card" style="border-top:5px solid var(--lilac);">
+    <div class="bhead"><span class="band l-chat">&#129302; Conversational Agentic Chat</span></div>
+
+    <div class="metric"><div class="ic">&#129504;</div><div>
+      <h4>Local LLM — qwen2.5:3b-instruct</h4>
+      <p>&#129682; Ollama on 127.0.0.1 (no cloud tokens) &nbsp;&#183;&nbsp; &#9203; 240 s timeout + retry-once &nbsp;&#183;&nbsp; &#128293; warm keep-alive 10&#8211;15 min &nbsp;&#183;&nbsp; &#129683; honest <b>RULE-BASED FALLBACK</b> if offline/down</p>
+    </div></div>
+
+    <div class="metric"><div class="ic">&#128295;</div><div>
+      <h4>7 grounded tools (JSON schema — LLM cannot fabricate results)</h4>
+      <div class="chiprow" style="margin-top:8px;">
+        <span class="chip">&#128269; search_local_prices</span>
+        <span class="chip">&#127991;&#65039; latest_price</span>
+        <span class="chip">&#128506;&#65039; get_regions</span>
+        <span class="chip">&#127757; web_lookup &#128273; citation-only</span>
+        <span class="chip">&#128302;&#65039; run_forecast (cache-first)</span>
+        <span class="chip">&#10133; forecast_with_factor</span>
+        <span class="chip">&#128680; get_risk</span>
+      </div>
+    </div></div>
+
+    <div class="metric"><div class="ic">&#127916;</div><div>
+      <h4>SSE frame protocol</h4>
+      <p><b>agent &#8594; tool_call &#8594; token &#8594; sources(trust) &#8594; audit</b> — one frame type per UI transition; the CEO sees <i>why</i> each number appears</p>
+    </div></div>
+
+    <div class="metric"><div class="ic">&#10133;</div><div>
+      <h4>Add-factor flow (conversational, no approval UI)</h4>
+      <p>CEO asks &#8220;what if monsoon arrives 10 days late?&#8221; &#8594; re-forecast with covariate override &#8594; <b>diff vs cached baseline</b> shown side by side</p>
+    </div></div>
+  </div>
+
+  <!-- workflow engine -->
+  <div class="card" style="border-top:5px solid var(--terra);">
+    <div class="bhead"><span class="band l-agents">&#9881;&#65039; SOP Workflow Orchestrator</span></div>
+    <div class="stages">
+      <span class="stage"><b>01_SENSE</b> &#127758; Market &#183; &#127785;&#65039; Weather &#183; &#128230; Supply</span>
+      <span class="stage"><b>02_PREDICT</b> &#128302;&#65039; Forecast (champion/fallback) &#183; &#128680; Risk</span>
+      <span class="stage"><b>03_SIMULATE</b> &#128658; Intervention catalog (policy) &#183; &#127918; Scenario</span>
+      <span class="stage"><b>04_ACT</b> &#128221; decision brief + &#129534; audit</span>
+      <span class="stage"><b>05_LEARN</b> &#129504; synthesis from computed numbers</span>
+    </div>
+    <div class="metric" style="margin-top:14px;"><div class="ic">&#127760;</div><div>
+      <h4>8 domain agents — every sentence data-derived</h4>
+      <p>Market &#183; Weather &#183; Supply &#183; Forecast &#183; Risk &#183; Intervention &#183; Scenario &#183; Workflow — invented defaults <b>removed</b>; evidence tagged <span style="white-space:nowrap;">&#128440; ingested series</span> / <span style="white-space:nowrap;">&#128221; policy-configured</span> / <span style="white-space:nowrap;">&#129514; deterministic math</span></p>
+    </div></div>
+    <div class="gov">
+      <span class="govchip">&#128221; DecisionReview <b>row persisted</b></span>
+      <span class="govchip">&#127918; ScenarioRun <b>row persisted</b></span>
+      <span class="govchip">&#129534; AuditEvent <b>immutable trail</b></span>
+      <span class="govchip">&#128683; approval UI: intentionally absent in demo</span>
+    </div>
+  </div>
+</div>
+
+<div class="flow"><span class="pill"><span class="n">&#9314;</span> grounded intelligence calls (cache-first, never network-blocking) <span class="ced">&#9660;</span></span></div>
+
+<!-- ============ ROW D : CORE ============ -->
+<div class="row coregrid">
+  <div class="card corecard" style="border-top:5px solid var(--green);">
+    <div class="metric" style="margin-top:0;"><div class="ic">&#128302;&#65039;</div><div>
+      <h4>Amazon Chronos-2 — real zero-shot foundation model</h4>
+      <p>&#128190; local weights only (<i>never</i> downloads mid-request) &nbsp;&#183;&nbsp; &#9986;&#65039; 365-day context cap (CPU-feasible) &nbsp;&#183;&nbsp; &#129701; robust quantile parsing &nbsp;&#183;&nbsp; &#129684; gap-regularized daily context (ffill, DB keeps raw gaps)</p>
+    </div></div>
+    <div class="metric"><div class="ic" style="background:#eef7f3;">&#9889;</div><div>
+      <h4>20 pre-computed real runs (demo cache)</h4>
+      <p>4 states &#215; 5 horizons, status <b>CHRONOS2_REAL</b>, cutoff 2026-10-15 &#8594; state flips are <b>instant on stage</b>; live compute only on demand</p>
+    </div></div>
+  </div>
+  <div class="card corecard" style="border-top:5px solid var(--green);">
+    <div class="metric" style="margin-top:0;"><div class="ic" style="background:#eef7f3;">&#127919;</div><div>
+      <h4>Risk sheet — one number everywhere</h4>
+      <p>Quantile-ladder exceedance from real Chronos-2 bands: <b>P(daily &gt; alert &#8377;35) / (&gt; crisis &#8377;50)</b>, day-7 / day-30 / max-30d — chat tile &amp; exec tile show the <b>same</b> ladder value</p>
+    </div></div>
+    <div class="metric"><div class="ic" style="background:#eef7f3;">&#129514;</div><div>
+      <h4>Deterministic layers, honestly labeled</h4>
+      <p>Calibrated spike evaluator reported <i>alongside</i> the ladder &nbsp;&#183;&nbsp; scenario engine: cap/subsidy/logistics constraint math &#8594; mitigation %, outlay, remaining reserve</p>
+    </div></div>
+  </div>
+  <div class="card corecard" style="border-top:5px solid var(--green);">
+    <div class="metric" style="margin-top:0;"><div class="ic" style="background:#eef7f3;">&#129514;</div><div>
+      <h4>Rolling-origin backtest — the trust anchor</h4>
+      <p>4 folds per horizon on real series; champion = <b>best point accuracy among models that emit calibrated bands</b>; per-state honest notes auto-generated (e.g. under-coverage &#8594; &#8220;plan on the 95% band&#8221;)</p>
+    </div></div>
+    <div class="metric"><div class="ic" style="background:#eef7f3;">&#128202;</div><div>
+      <h4>&#8220;Why trust&#8221; answer, pre-computed</h4>
+      <p>WAPE <b>13.9%</b> @14d / <b>19.5%</b> @30d (AP) &#8594; <b>&#8805;86% level accuracy</b> on 4 years of real data; best state: Maharashtra 8.3% / 13.2%</p>
+    </div></div>
+  </div>
+</div>
+
+<div class="flow"><span class="pill"><span class="n">&#9315;</span> reads real series &#183; writes governance rows &#183; never touches a fabricated value <span class="ced">&#9660;</span></span></div>
+
+<!-- ============ ROW E : DATA ============ -->
+<div class="card datacard" style="border-top:5px solid var(--slate);">
+  <div class="bhead">
+    <span class="band l-data">&#128451;&#65039; Data &amp; Persistence — SQLite (absolute path)</span>
+    <span class="hint">ap_commodities.db &#183; CWD-safe</span>
+  </div>
+  <div style="display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:16px;margin-top:6px;">
+    <div class="metric" style="margin-top:8px;"><div class="ic" style="background:#f1f3f8;">&#128391;&#65039;</div><div>
+      <h4>Ingestion pipeline</h4>
+      <p>&#129534; production CSV (DD-MM-YYYY, &#8377;/quintal internally &#8594; &#8377;/kg, arrivals as MT) &#8594; <b>_purge_synthetic()</b> on every ingest (flags <i>is_demo_data=False</i>, removes 905 fake obs + 910 fake external + fake forecasts) &#8594; <b>MODAL_ONLY_SERIES</b> honesty flags (min=max=modal disclosed)</p>
+    </div></div>
+    <div class="metric" style="margin-top:8px;"><div class="ic" style="background:#f1f3f8;">&#128202;</div><div>
+      <h4>Real coverage</h4>
+      <p>&#128204; market rows: AP 1,749 &#183; KA 1,640 &#183; MP 1,734 &#183; MH 1,728 &#183; &#127758; context rows: weather, production, arrivals (22,591) &#183; &#128197; 2022-01-01 &#8594; 2026-10-15 &#183; mandis = &#8220;reference site, district ingest on roadmap&#8221;</p>
+    </div></div>
+    <div class="metric" style="margin-top:8px;"><div class="ic" style="background:#f1f3f8;">&#129534;</div><div>
+      <h4>Tables &amp; artifacts</h4>
+      <p>&#128202; market_observation &#183; &#127785;&#65039; external_observation &#183; &#128302;&#65039; forecast_run &#183; &#128680; risk_assessment &#183; &#127918; scenario_run &#183; &#128221; decision_review &#183; &#129534; audit_event &nbsp;+&nbsp; &#129514; <b>forecast_metrics.json</b> (all real WAPE/MAE/coverage + selection rule + honest notes)</p>
+    </div></div>
+  </div>
+</div>
+
+<div class="flow"><span class="pill"><span class="n">&#9316;</span> only trust-whitelisted inbound text — never auto-ingested <span class="ced">&#9660;</span></span></div>
+
+<!-- ============ ROW F : EXTERNAL ============ -->
+<div class="card foot">
+  <div class="footleft">
+    <span class="band l-ext">&#127757; External Web Fallback — Tavily</span>
+    <span class="whoami">today&#8217;s-price question &#8594; web result shown with <b>&#128737;&#65039; trust badge + citation</b> &#183; fetched text is <b>display-only</b> (RW blocked) &#183; ingestion whitelist-gated &#183; offline &#8594; honest <b>WEB_SEARCH_UNAVAILABLE</b> instead of a fabricated answer</span>
+  </div>
+  <div class="whoami">&#127917; Demo-day protocol: cached forecasts serve instantly &#183; chat warms automatically &#183; rule-based fallback if LLM down &#183; zero fabricated numbers anywhere</div>
+</div>
+
+</body>
+</html>

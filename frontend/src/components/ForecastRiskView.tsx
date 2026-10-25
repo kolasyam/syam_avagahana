@@ -85,7 +85,14 @@ export const ForecastRiskView: React.FC<ForecastRiskViewProps> = ({
     upper_95: pt.upper_95
   }));
 
-  const metrics = forecast?.metrics;
+  const metrics: any = forecast?.metrics;
+  // Real artifact fields: mae / wape_pct / coverage_80 / eval_samples (rolling backtest)
+  const maeVal = typeof metrics?.mae === "number" ? metrics.mae : null;
+  const wapeVal = typeof metrics?.wape_pct === "number" ? metrics.wape_pct
+    : typeof metrics?.wape === "number" ? metrics.wape : null;
+  const covVal = typeof metrics?.coverage_80 === "number" ? metrics.coverage_80
+    : typeof metrics?.interval_coverage === "number" ? metrics.interval_coverage : null;
+  const evalPoints = typeof metrics?.eval_samples === "number" ? metrics.eval_samples : null;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
@@ -99,7 +106,7 @@ export const ForecastRiskView: React.FC<ForecastRiskViewProps> = ({
             Forecast & Risk Intelligence
           </h1>
           <p style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontSize: "17px", color: "var(--color-ink-muted)", marginTop: "4px" }}>
-            Deterministic AR-Lag regressions & medium- to long-term harvest arrival projections.
+            Foundation-model forecasting (real Chronos-2) with deterministic fallback, backed by a rolling-origin backtest on four years of real market data.
           </p>
         </div>
 
@@ -196,20 +203,20 @@ export const ForecastRiskView: React.FC<ForecastRiskViewProps> = ({
 
             <div style={{ display: "flex", gap: "24px", flexWrap: "wrap" }}>
               <div>
-                <div className="eyebrow-tag" style={{ color: "var(--color-ink-muted)", fontSize: "10px" }}>MAE (₹/KG)</div>
-                <div style={{ fontFamily: "var(--font-mono)", fontSize: "20px", fontWeight: 700, color: "var(--color-ink)" }}>₹{metrics.mae.toFixed(2)}</div>
+                <div className="eyebrow-tag" style={{ color: "var(--color-ink-muted)", fontSize: "10px" }}>MAE (₹/KG, ROLLING BACKTEST)</div>
+                <div style={{ fontFamily: "var(--font-mono)", fontSize: "20px", fontWeight: 700, color: "var(--color-ink)" }}>{maeVal != null ? `₹${maeVal.toFixed(2)}` : "—"}</div>
               </div>
               <div>
-                <div className="eyebrow-tag" style={{ color: "var(--color-ink-muted)", fontSize: "10px" }}>RMSE</div>
-                <div style={{ fontFamily: "var(--font-mono)", fontSize: "20px", fontWeight: 700, color: "var(--color-ink)" }}>₹{metrics.rmse.toFixed(2)}</div>
+                <div className="eyebrow-tag" style={{ color: "var(--color-ink-muted)", fontSize: "10px" }}>BACKTEST EVAL POINTS</div>
+                <div style={{ fontFamily: "var(--font-mono)", fontSize: "20px", fontWeight: 700, color: "var(--color-ink)" }}>{evalPoints != null ? evalPoints : "—"}</div>
               </div>
               <div>
                 <div className="eyebrow-tag" style={{ color: "var(--color-ink-muted)", fontSize: "10px" }}>WAPE</div>
-                <div style={{ fontFamily: "var(--font-mono)", fontSize: "20px", fontWeight: 700, color: "var(--status-normal)" }}>{metrics.wape.toFixed(1)}%</div>
+                <div style={{ fontFamily: "var(--font-mono)", fontSize: "20px", fontWeight: 700, color: "var(--status-normal)" }}>{wapeVal != null ? `${wapeVal.toFixed(1)}%` : "—"}</div>
               </div>
               <div>
-                <div className="eyebrow-tag" style={{ color: "var(--color-ink-muted)", fontSize: "10px" }}>95% COVERAGE</div>
-                <div style={{ fontFamily: "var(--font-mono)", fontSize: "20px", fontWeight: 700, color: "var(--color-primary)" }}>{metrics.interval_coverage.toFixed(1)}%</div>
+                <div className="eyebrow-tag" style={{ color: "var(--color-ink-muted)", fontSize: "10px" }}>80% COVERAGE (BACKTEST)</div>
+                <div style={{ fontFamily: "var(--font-mono)", fontSize: "20px", fontWeight: 700, color: "var(--color-primary)" }}>{covVal != null ? `${covVal.toFixed(1)}%` : "—"}</div>
               </div>
             </div>
           </div>
@@ -273,18 +280,18 @@ export const ForecastRiskView: React.FC<ForecastRiskViewProps> = ({
         <RiskGauge risk={risk} />
       </div>
 
-      {/* Model Comparison & Rolling Backtest Matrix */}
-      {backtest && (
+      {/* Model Comparison & Rolling Backtest Matrix — REAL artifact numbers only */}
+      {backtest && backtest.models && (
         <div className="liquid-glass" style={{ padding: "24px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "8px" }}>
             <div>
-              <div className="eyebrow-tag">RIGOROUS VALIDATION</div>
+              <div className="eyebrow-tag">ROLLING-ORIGIN VALIDATION • REAL DATA</div>
               <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "20px", fontWeight: 400, color: "var(--color-ink)" }}>
-                Rolling-Origin Backtest Benchmark ({horizon}-Day Horizons)
+                Backtest Benchmark ({backtest.horizon_tested ?? backtest.horizon_requested ?? horizon}-Day Horizons, {backtest.n_folds ?? "?"} Folds)
               </h3>
             </div>
-            <span className="badge-glass badge-mint">
-              180-DAY BACKTEST RATIFIED
+            <span className="badge-glass badge-mint" style={{ fontSize: "10px" }}>
+              BACKTEST ARTIFACT {backtest.generated_at ? new Date(backtest.generated_at).toLocaleDateString() : ""}
             </span>
           </div>
 
@@ -292,58 +299,73 @@ export const ForecastRiskView: React.FC<ForecastRiskViewProps> = ({
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px", textAlign: "left" }}>
               <thead>
                 <tr style={{ background: "rgba(0, 0, 0, 0.03)", borderBottom: "1px solid rgba(0, 0, 0, 0.08)" }}>
-                  <th style={{ padding: "10px 14px" }}>Model Architecture</th>
-                  <th style={{ padding: "10px 14px" }}>Mean Absolute Error (MAE)</th>
-                  <th style={{ padding: "10px 14px" }}>RMSE</th>
+                  <th style={{ padding: "10px 14px" }}>Model</th>
+                  <th style={{ padding: "10px 14px" }}>MAE (₹/kg)</th>
+                  <th style={{ padding: "10px 14px" }}>RMSE (₹/kg)</th>
                   <th style={{ padding: "10px 14px" }}>WAPE (%)</th>
+                  <th style={{ padding: "10px 14px" }}>80% Coverage</th>
                   <th style={{ padding: "10px 14px" }}>95% Coverage</th>
-                  <th style={{ padding: "10px 14px" }}>Status</th>
+                  <th style={{ padding: "10px 14px" }}>Role</th>
                 </tr>
               </thead>
               <tbody>
-                <tr style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.05)", backgroundColor: "rgba(0, 102, 204, 0.03)" }}>
-                  <td style={{ padding: "10px 14px", fontWeight: 600, color: "var(--color-primary)" }}>
-                    AR-Lag Covariate Model (Production)
-                  </td>
-                  <td style={{ padding: "10px 14px", fontFamily: "var(--font-mono)" }}>₹{backtest.production_model?.mae?.toFixed(2) || "1.42"}</td>
-                  <td style={{ padding: "10px 14px", fontFamily: "var(--font-mono)" }}>₹{backtest.production_model?.rmse?.toFixed(2) || "1.86"}</td>
-                  <td style={{ padding: "10px 14px", fontFamily: "var(--font-mono)", fontWeight: 600, color: "var(--status-normal)" }}>
-                    {backtest.production_model?.wape?.toFixed(1) || "4.1"}%
-                  </td>
-                  <td style={{ padding: "10px 14px", fontFamily: "var(--font-mono)" }}>91.5%</td>
-                  <td style={{ padding: "10px 14px" }}>
-                    <span className="badge-glass badge-mint" style={{ fontSize: "10px" }}>PRODUCTION</span>
-                  </td>
-                </tr>
-
-                <tr style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.05)" }}>
-                  <td style={{ padding: "10px 14px", fontWeight: 500 }}>
-                    Chronos Large-Scale Pretrained (Candidate)
-                  </td>
-                  <td style={{ padding: "10px 14px", fontFamily: "var(--font-mono)" }}>₹{backtest.chronos_candidate?.mae?.toFixed(2) || "1.58"}</td>
-                  <td style={{ padding: "10px 14px", fontFamily: "var(--font-mono)" }}>₹{backtest.chronos_candidate?.rmse?.toFixed(2) || "2.05"}</td>
-                  <td style={{ padding: "10px 14px", fontFamily: "var(--font-mono)" }}>4.8%</td>
-                  <td style={{ padding: "10px 14px", fontFamily: "var(--font-mono)" }}>88.2%</td>
-                  <td style={{ padding: "10px 14px" }}>
-                    <span className="badge-glass badge-lilac" style={{ fontSize: "10px" }}>CANDIDATE</span>
-                  </td>
-                </tr>
-
-                <tr style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.05)" }}>
-                  <td style={{ padding: "10px 14px", color: "var(--color-ink-muted)" }}>
-                    Seasonal-Naive Baseline (Lag-7)
-                  </td>
-                  <td style={{ padding: "10px 14px", fontFamily: "var(--font-mono)" }}>₹3.82</td>
-                  <td style={{ padding: "10px 14px", fontFamily: "var(--font-mono)" }}>₹4.65</td>
-                  <td style={{ padding: "10px 14px", fontFamily: "var(--font-mono)" }}>11.4%</td>
-                  <td style={{ padding: "10px 14px", fontFamily: "var(--font-mono)" }}>74.0%</td>
-                  <td style={{ padding: "10px 14px" }}>
-                    <span className="badge-glass badge-cream" style={{ fontSize: "10px" }}>BENCHMARK</span>
-                  </td>
-                </tr>
+                {backtest.models.map((m: any, idx: number) => (
+                  <tr
+                    key={idx}
+                    style={{
+                      borderBottom: "1px solid rgba(0, 0, 0, 0.05)",
+                      backgroundColor: m.is_champion ? "rgba(0, 102, 204, 0.05)" : "transparent",
+                    }}
+                  >
+                    <td style={{ padding: "10px 14px", fontWeight: m.is_champion ? 600 : 500, color: m.is_champion ? "var(--color-primary)" : "var(--color-ink)" }}>
+                      {m.model_name}
+                    </td>
+                    <td style={{ padding: "10px 14px", fontFamily: "var(--font-mono)" }}>{m.mae?.toFixed(2)}</td>
+                    <td style={{ padding: "10px 14px", fontFamily: "var(--font-mono)" }}>{m.rmse?.toFixed(2)}</td>
+                    <td style={{ padding: "10px 14px", fontFamily: "var(--font-mono)", fontWeight: 600, color: "var(--status-normal)" }}>
+                      {m.wape_pct?.toFixed(1)}%
+                    </td>
+                    <td style={{ padding: "10px 14px", fontFamily: "var(--font-mono)" }}>
+                      {m.interval_80_coverage_pct != null ? `${m.interval_80_coverage_pct.toFixed(1)}%` : "—"}
+                    </td>
+                    <td style={{ padding: "10px 14px", fontFamily: "var(--font-mono)" }}>
+                      {m.interval_95_coverage_pct != null ? `${m.interval_95_coverage_pct.toFixed(1)}%` : "—"}
+                    </td>
+                    <td style={{ padding: "10px 14px" }}>
+                      {m.is_champion ? (
+                        <span className="badge-glass badge-mint" style={{ fontSize: "10px" }}>CHAMPION</span>
+                      ) : m.is_baseline ? (
+                        <span className="badge-glass badge-cream" style={{ fontSize: "10px" }}>NAIVE BASELINE</span>
+                      ) : (
+                        <span className="badge-glass badge-lilac" style={{ fontSize: "10px" }}>TABULAR</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
+
+          {backtest.chronos_skill_vs_naive_pct != null && (
+            <div style={{ marginTop: "12px", fontSize: "12.5px", color: "var(--color-ink-secondary)" }}>
+              Champion skill vs naive baseline: <strong>{backtest.chronos_skill_vs_naive_pct > 0 ? "+" : ""}{backtest.chronos_skill_vs_naive_pct}% MAE improvement</strong> · errors in ₹/kg (quintal/100)
+            </div>
+          )}
+          {backtest.selection_rule && (
+            <div style={{ marginTop: "8px", fontSize: "11.5px", color: "var(--color-ink-muted)", fontStyle: "italic" }}>
+              Selection rule: {backtest.selection_rule}
+            </div>
+          )}
+          {Array.isArray(backtest.honest_notes) && backtest.honest_notes.length > 0 && (
+            <div style={{ marginTop: "8px", display: "flex", flexDirection: "column", gap: "4px" }}>
+              {backtest.honest_notes.map((n: string, i: number) => (
+                <div key={i} style={{ fontSize: "12px", color: "var(--color-terracotta)" }}>⚠ {n}</div>
+              ))}
+            </div>
+          )}
+          {backtest.note && (
+            <div style={{ marginTop: "6px", fontSize: "12px", color: "var(--color-ink-muted)" }}>{backtest.note}</div>
+          )}
         </div>
       )}
     </div>

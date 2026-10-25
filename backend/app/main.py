@@ -22,14 +22,31 @@ from app.api.v1.recommendations import router as recommendations_router
 from app.api.v1.sources import router as sources_router
 from app.api.v1.investigate import router as investigate_router
 from app.api.v1.audit import router as audit_router
+from app.api.v1.web_lookup import router as web_lookup_router
+from app.api.v1.chat import router as chat_router
 
 from contextlib import asynccontextmanager
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Create tables and seed data
+    # Create tables, then load data. Synthetic seeding only when explicitly
+    # requested (SEED_SYNTHETIC=true); the default path ingests the REAL
+    # curated dataset via ingest_real.py.
     Base.metadata.create_all(bind=engine)
-    seed_database()
+    if settings.SEED_SYNTHETIC:
+        import logging
+        logging.warning("SEED_SYNTHETIC=true — loading DEMO/SYNTHETIC data. "
+                        "This flags every row is_demo_data=True. Not for client demos.")
+        seed_database()
+    else:
+        import logging
+        from app.data.ingest_real import ensure_real_data
+        try:
+            summary = ensure_real_data()
+            logging.info("Real-data ingestion: %s", summary)
+        except Exception as exc:  # hard fail loudly, never silently fake data
+            logging.error("REAL-DATA INGESTION FAILED: %s — API will report "
+                          "insufficient history rather than fabricate data.", exc)
     yield
 
 app = FastAPI(
@@ -39,12 +56,23 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS configuration
+# CORS configuration — locked to workspace origins in demo mode.
+# (was: allow_origins=["*"] with credentials=True — an anti-pattern)
+_trusted_origins = [
+    "http://localhost:5173",   # Vite dev server
+    "http://127.0.0.1:5173",
+    "http://localhost:4173",   # Vite preview / built dist
+    "http://127.0.0.1:4173",
+    "http://localhost:8000",   # same-origin (served dist)
+]
+if os.getenv("EXTRA_CORS_ORIGINS"):
+    _trusted_origins += [o.strip() for o in os.getenv("EXTRA_CORS_ORIGINS", "").split(",") if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_trusted_origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PATCH", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -67,6 +95,8 @@ app.include_router(risk_router, prefix="/api/v1/risk", tags=["Risk"])
 app.include_router(scenarios_router, prefix="/api/v1/scenarios", tags=["Scenarios"])
 app.include_router(recommendations_router, prefix="/api/v1/recommendations", tags=["Recommendations & Approvals"])
 app.include_router(sources_router, prefix="/api/v1/sources", tags=["Data Sources"])
+app.include_router(web_lookup_router, prefix="/api/v1/web", tags=["Web Fallback"])
+app.include_router(chat_router, prefix="/api/v1/chat", tags=["Agentic Chat"])
 app.include_router(investigate_router, prefix="/api/v1/investigate", tags=["Agentic Investigation"])
 app.include_router(audit_router, prefix="/api/v1/audit", tags=["Audit Trail"])
 

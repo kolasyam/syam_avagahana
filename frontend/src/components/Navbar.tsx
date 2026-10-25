@@ -11,6 +11,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const tabs = [
     { id: "workspace", label: "Executive Workspace" },
+    { id: "agentic-chat", label: "Agentic Chat" },
     { id: "market", label: "Market Intelligence" },
     { id: "forecast", label: "Forecast & Risk" },
     { id: "scenario", label: "Scenario Lab" },
@@ -19,6 +20,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: "upload", label: "Data Intake" },
     { id: "inspector", label: "Audit Trail" }
   ];
+
 
   return (
     <nav className="liquid-nav">

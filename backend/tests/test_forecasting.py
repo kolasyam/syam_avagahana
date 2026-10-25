@@ -43,15 +43,32 @@ def test_autoregressive_covariate_model():
         assert p["lower_95"] <= p["lower_80"]
         assert p["upper_95"] >= p["upper_80"]
 
-def test_chronos_candidate_adapter():
-    adapter = Chronos2CandidateAdapter()
+def test_chronos_adapter_contract():
+    """The adapter is the REAL pretrained Chronos-2 model (no more fake candidate
+    facade). Real inference requires locally cached weights; the contract test
+    skips gracefully when they're absent (CI-safe), never fakes output."""
+    adapter = Chronos2CandidateAdapter()  # alias of Chronos2FoundationModel
+    # Honesty contract: this is a real model now, no "experimental candidate" theater
+    assert adapter.is_candidate is False
+    assert "candidate" not in adapter.status_label.lower()
+
+    pytest.importorskip("chronos")
+    pytest.importorskip("torch")
     dates = pd.date_range("2026-06-01", periods=30)
     prices = [25.0 + (i * 0.2) for i in range(30)]
     df = pd.DataFrame({"date": dates.strftime("%Y-%m-%d"), "modal_price": prices, "arrivals_mt": [300.0]*30})
-    res = adapter.predict(df, horizon=7)
-    assert "Amazon Chronos-2" in res["model_name"]
-    assert "candidate_status" in res
-    assert len(res["series"]) == 7
+    try:
+        res = adapter.predict(df, horizon=7)
+    except Exception as exc:
+        if "weights" in str(exc).lower() or "load" in str(exc).lower() or "Could not load" in str(exc):
+            pytest.skip(f"Chronos-2 weights not cached locally: {exc}")
+        raise
+    assert len(res) == 7
+    for p in res:
+        assert "date" in p and "predicted_modal" in p
+        assert p["lower_80"] <= p["predicted_modal"] <= p["upper_80"]
+        assert p["lower_95"] <= p["lower_80"]
+        assert p["upper_95"] >= p["upper_80"]
 
 def test_rolling_origin_backtest():
     dates = pd.date_range("2026-06-01", periods=50)

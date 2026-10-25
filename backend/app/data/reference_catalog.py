@@ -3,6 +3,8 @@ Reference Catalog for Commodities, Mandis/Districts, and Policy Parameters
 All entities strictly in English. Production Grade.
 """
 
+from app.core.config import settings
+
 GEOGRAPHIES = [
     {
         "id": "mandi_kurnool",
@@ -80,91 +82,74 @@ COMMODITIES = [
 
 CONNECTORS_METADATA = [
     {
-        "connector_id": "conn_agmarknet",
-        "name": "AGMARKNET / APMC Mandi Feeds",
+        "connector_id": "conn_agmarknet_curated",
+        "name": "AGMARKNET — Curated Daily State Series",
         "family": "Market Prices & Arrivals",
-        "status": "ONLINE_ACTIVE",
-        "freshness_hours": 1.2,
-        "records_count": 48200,
+        "status": "INGESTED_ACTIVE",
+        "freshness_hours": None,
+        "records_count": 6851,
         "quality_score": 0.98,
-        "mode_label": "Live Ingestion (AGMARKNET Daily Gateway)",
-        "last_sync": "2026-10-23T18:00:00Z"
+        "mode_label": "Ingested local dataset (2022-01-01 → 2026-10-15, daily)",
+        "last_sync": "2026-10-15T00:00:00Z",
+        "note": "State aggregates: AP, MH, KA, MP. AP series complete (0 missing modals)."
     },
     {
-        "connector_id": "conn_enam",
-        "name": "e-NAM Unified Trade Platform",
-        "family": "Electronic Mandi Trades",
-        "status": "ONLINE_ACTIVE",
-        "freshness_hours": 2.5,
-        "records_count": 31400,
-        "quality_score": 0.96,
-        "mode_label": "Production Gateway (e-NAM Integration)",
-        "last_sync": "2026-10-23T17:30:00Z"
-    },
-    {
-        "connector_id": "conn_doca",
-        "name": "Department of Consumer Affairs (DoCA PMS)",
-        "family": "Retail & Wholesale Price Monitoring",
-        "status": "ONLINE_ACTIVE",
-        "freshness_hours": 3.0,
-        "records_count": 18200,
-        "quality_score": 0.99,
-        "mode_label": "Production Gateway (DoCA Real-Time API)",
-        "last_sync": "2026-10-23T16:00:00Z"
-    },
-    {
-        "connector_id": "conn_ap_horticulture",
-        "name": "AP Department of Horticulture & Agriculture",
-        "family": "Acreage, Crop Stage & Yield",
-        "status": "ONLINE_ACTIVE",
-        "freshness_hours": 12.0,
-        "records_count": 1250,
-        "quality_score": 0.94,
-        "mode_label": "Integrated SCM (State Horticulture Dept)",
-        "last_sync": "2026-10-23T06:00:00Z"
-    },
-    {
-        "connector_id": "conn_imd",
-        "name": "India Meteorological Department (IMD)",
-        "family": "Weather, Monsoon & Extreme Rainfall",
-        "status": "ONLINE_ACTIVE",
-        "freshness_hours": 2.0,
-        "records_count": 14600,
-        "quality_score": 0.97,
-        "mode_label": "Automated Telemetry (IMD Radar Grid)",
-        "last_sync": "2026-10-23T18:30:00Z"
-    },
-    {
-        "connector_id": "conn_nafed",
-        "name": "NAFED / NCCF Central Buffer Stock",
-        "family": "Price Stabilisation Fund (PSF)",
-        "status": "ONLINE_ACTIVE",
-        "freshness_hours": 4.5,
-        "records_count": 480,
-        "quality_score": 0.99,
-        "mode_label": "Verified Ledger (NAFED/NCCF PSF Buffer)",
-        "last_sync": "2026-10-23T15:00:00Z"
-    },
-    {
-        "connector_id": "conn_civil_supplies",
-        "name": "AP Civil Supplies SCM & ePOS Rythu Bazaars",
-        "family": "Public Distribution & Subsidised Counters",
-        "status": "ONLINE_ACTIVE",
-        "freshness_hours": 1.5,
-        "records_count": 62000,
-        "quality_score": 0.99,
-        "mode_label": "Active SCM (AP ePOS Rythu Bazaars)",
-        "last_sync": "2026-10-23T18:15:00Z"
-    },
-    {
-        "connector_id": "conn_logistics",
-        "name": "South Central Railway & Interstate Freight TMS",
-        "family": "Freight Rakes & Truck Convoys",
-        "status": "ONLINE_ACTIVE",
-        "freshness_hours": 2.8,
-        "records_count": 8900,
+        "connector_id": "conn_imd_context",
+        "name": "IMD — Derived Weather Context",
+        "family": "Weather & Climate",
+        "status": "INGESTED_ACTIVE",
+        "freshness_hours": None,
+        "records_count": 6996,
         "quality_score": 0.95,
-        "mode_label": "Live Waybills (South Central Railway Freight)",
-        "last_sync": "2026-10-23T17:00:00Z"
-    }
+        "mode_label": "Ingested context series (precipitation, VPD, seasonal rain)",
+        "last_sync": "2026-10-15T00:00:00Z",
+        "note": "Derived/curated weather series aligned to the price dataset; live IMD telemetry on roadmap."
+    },
+    {
+        "connector_id": "conn_doca_retail",
+        "name": "DoCA PMS — Retail Price Lens",
+        "family": "Retail Price Monitoring",
+        "status": "INGESTED_ACTIVE",
+        "freshness_hours": None,
+        "records_count": 6750,
+        "quality_score": 0.97,
+        "mode_label": "Retail reference series ingested alongside mandi modal prices",
+        "last_sync": "2026-10-15T00:00:00Z"
+    },
+    {
+        "connector_id": "conn_production_estimates",
+        "name": "Production & Supply Context (Horticulture estimates)",
+        "family": "Acreage, Production & Stocks",
+        "status": "INGESTED_ACTIVE",
+        "freshness_hours": None,
+        "records_count": 8745,
+        "quality_score": 0.90,
+        "mode_label": "Standing production estimates (AP/MH/India) + fuel price context",
+        "last_sync": "2026-10-15T00:00:00Z"
+    },
+    {
+        "connector_id": "conn_tavily_web",
+        "name": "Tavily — Web Fallback (Market Agent escalation)",
+        "family": "Web Search Fallback",
+        "status": "READY" if settings.TAVILY_API_KEY else "CONFIG_NOT_SET",
+        "freshness_hours": 0.0,
+        "records_count": 0,
+        "quality_score": 0.8,
+        "mode_label": "Citation-only web fallback; trust-whitelist filtered; never auto-ingested",
+        "last_sync": None,
+        "note": "Set TAVILY_API_KEY to enable." if not settings.TAVILY_API_KEY else None
+    },
+    {
+        "connector_id": "conn_district_agmarknet",
+        "name": "AGMARKNET — District-Level Pull",
+        "family": "Market Prices & Arrivals",
+        "status": "ROADMAP_NOT_INGESTED",
+        "freshness_hours": None,
+        "records_count": 0,
+        "quality_score": None,
+        "mode_label": "District ingest on roadmap. Registered mandis (Kurnool, Kadapa, "
+                      "Vijayawada, Tirupati, Visakhapatnam) are REFERENCE SITES with no price rows; "
+                      "district quotes may be fetched via the web-fallback tool with citation.",
+        "last_sync": None
+    },
 ]

@@ -21,7 +21,7 @@ export const WorkspaceView: React.FC<WorkspaceViewProps> = ({
   onNavigateForecast
 }) => {
   const [query, setQuery] = useState(
-    "Analyze the modal onion price surge across Kurnool mandis and formulate an emergency buffer liquidation strategy."
+    "Analyze the recent modal price surge in the AP state aggregate and formulate a buffer liquidation strategy."
   );
   const [horizon, setHorizon] = useState<number>(14);
   const [isStreaming, setIsStreaming] = useState<boolean>(false);
@@ -30,8 +30,8 @@ export const WorkspaceView: React.FC<WorkspaceViewProps> = ({
   const [expandedAgents, setExpandedAgents] = useState<Record<string, boolean>>({});
 
   const quickPrompts = [
-    { label: "14-Day Surge Analysis", text: "Analyze the modal onion price surge across Kurnool mandis and formulate an emergency buffer liquidation strategy.", h: 14 },
-    { label: "60-Day Kharif Harvest Forecast", text: "Evaluate 60-day price trends considering late Kharif crop arrivals and Maharashtra inflow patterns.", h: 60 },
+    { label: "14-Day Surge Analysis", text: "Analyze the recent modal price surge in the AP state aggregate and formulate a buffer liquidation strategy.", h: 14 },
+    { label: "60-Day Kharif Harvest Outlook", text: "Evaluate 60-day price trends considering late Kharif crop arrivals and Maharashtra inflow patterns.", h: 60 },
     { label: "90-Day Seasonal Clearing", text: "Project 90-day wholesale price trajectory, Rabi planting outlook, and buffer re-accumulation.", h: 90 },
   ];
 
@@ -368,40 +368,48 @@ export const WorkspaceView: React.FC<WorkspaceViewProps> = ({
             <div className="liquid-glass" style={{ padding: "16px" }}>
               <div className="eyebrow-tag">CURRENT SPOT MODAL</div>
               <div className="metric-number" style={{ fontSize: "24px", fontWeight: 700, color: "var(--color-ink)", marginTop: "4px" }}>
-                ₹{finalSynthesis.market_analytics?.latest_modal_price?.toFixed(2) || "40.88"}/kg
+                {finalSynthesis.market_analytics?.latest_modal_price != null
+                  ? `₹${Number(finalSynthesis.market_analytics.latest_modal_price).toFixed(2)}/kg`
+                  : "—"}
               </div>
-              <div style={{ fontSize: "12px", color: "var(--status-critical)", marginTop: "2px" }}>
-                +18.5% Inflow Deficit Shock
+              <div style={{ fontSize: "12px", color: "var(--color-ink-muted)", marginTop: "2px" }}>
+                Real ingested series (AGMARKNET-derived)
               </div>
             </div>
 
             <div className="liquid-glass" style={{ padding: "16px" }}>
               <div className="eyebrow-tag">PEAK UNMITIGATED</div>
               <div className="metric-number" style={{ fontSize: "24px", fontWeight: 700, color: "var(--color-ink)", marginTop: "4px" }}>
-                ₹{finalSynthesis.forecast_peak?.toFixed(2) || "48.50"}/kg
+                {finalSynthesis.forecast_peak != null
+                  ? `₹${Number(finalSynthesis.forecast_peak).toFixed(2)}/kg`
+                  : "—"}
               </div>
               <div style={{ fontSize: "12px", color: "var(--color-ink-muted)", marginTop: "2px" }}>
-                Uncertainty Cone ±₹3.80
+                Chronos-2 quantile cone (80/95%)
               </div>
             </div>
 
             <div className="liquid-glass" style={{ padding: "16px" }}>
               <div className="eyebrow-tag">THRESHOLD BREACH RISK</div>
               <div className="metric-number" style={{ fontSize: "24px", fontWeight: 700, color: "var(--status-critical)", marginTop: "4px" }}>
-                {(finalSynthesis.spike_probability * 100).toFixed(0)}%
+                {finalSynthesis.spike_probability != null
+                  ? `${(Number(finalSynthesis.spike_probability) * 100).toFixed(0)}%`
+                  : "—"}
               </div>
               <div style={{ fontSize: "12px", color: "var(--status-critical)", marginTop: "2px" }}>
-                Probability of ₹50 Cap Breach
+                From forecast distribution (quantile ladder)
               </div>
             </div>
 
             <div className="liquid-glass" style={{ padding: "16px" }}>
               <div className="eyebrow-tag">PROJECTED MITIGATION</div>
               <div className="metric-number" style={{ fontSize: "24px", fontWeight: 700, color: "var(--status-normal)", marginTop: "4px" }}>
-                -{finalSynthesis.recommended_scenario?.expected_price_mitigation_pct || 26.4}%
+                {finalSynthesis.recommended_scenario?.expected_price_mitigation_pct != null
+                  ? `-${Number(finalSynthesis.recommended_scenario.expected_price_mitigation_pct).toFixed(1)}%`
+                  : "—"}
               </div>
               <div style={{ fontSize: "12px", color: "var(--status-normal)", marginTop: "2px" }}>
-                Stabilizes wholesale @ ₹32.00/kg
+                Deterministic scenario engine (real constraint math)
               </div>
             </div>
           </div>

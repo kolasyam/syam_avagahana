@@ -1,0 +1,489 @@
+{
+  "generated_at": "2026-10-25T06:35:31.870667+00:00",
+  "by_geography": {
+    "state_andhra_pradesh": {
+      "14": {
+        "status": "COMPLETED",
+        "horizon_tested": 14,
+        "n_folds": 4,
+        "winning_model": "Chronos-2 (Champion)",
+        "chronos_skill_vs_naive_pct": 9.2,
+        "scale_note": "errors in \u20b9/kg (\u20b9 per kilogram, quintal/100)",
+        "note": null,
+        "models": [
+          {
+            "model_name": "Seasonal-Naive",
+            "mae": 5.45,
+            "rmse": 6.76,
+            "wape_pct": 15.23,
+            "interval_80_coverage_pct": null,
+            "interval_95_coverage_pct": null,
+            "eval_samples": 56,
+            "is_champion": false,
+            "is_baseline": true
+          },
+          {
+            "model_name": "Exponential Smoothing",
+            "mae": 3.7,
+            "rmse": 5.02,
+            "wape_pct": 10.36,
+            "interval_80_coverage_pct": null,
+            "interval_95_coverage_pct": null,
+            "eval_samples": 56,
+            "is_champion": false,
+            "is_baseline": false
+          },
+          {
+            "model_name": "AR-Lag Tabular (Challenger)",
+            "mae": 4.98,
+            "rmse": 6.02,
+            "wape_pct": 13.93,
+            "interval_80_coverage_pct": 98.2,
+            "interval_95_coverage_pct": 100.0,
+            "eval_samples": 56,
+            "is_champion": false,
+            "is_baseline": false
+          },
+          {
+            "model_name": "Chronos-2 (Champion)",
+            "mae": 4.95,
+            "rmse": 6.08,
+            "wape_pct": 13.85,
+            "interval_80_coverage_pct": 98.2,
+            "interval_95_coverage_pct": 100.0,
+            "eval_samples": 56,
+            "is_champion": true,
+            "is_baseline": false
+          }
+        ],
+        "generated_at": "2026-10-25T06:36:13.080562+00:00",
+        "selection_rule": "Champion selection requires calibrated quantile intervals (risk-engine dependency) alongside competitive point accuracy; point-only models (Seasonal-Naive, Exponential Smoothing) are excluded from selection by design.",
+        "honest_notes": [
+          "Exponential Smoothing posts the lowest point error (MAE \u20b93.7/kg vs champion \u20b94.95/kg) but emits no calibrated interval \u2014 the production champion must produce quantile bands because the risk engine and probability sheet depend on them."
+        ]
+      },
+      "30": {
+        "status": "COMPLETED",
+        "horizon_tested": 30,
+        "n_folds": 4,
+        "winning_model": "Chronos-2 (Champion)",
+        "chronos_skill_vs_naive_pct": -21.6,
+        "scale_note": "errors in \u20b9/kg (\u20b9 per kilogram, quintal/100)",
+        "note": null,
+        "models": [
+          {
+            "model_name": "Seasonal-Naive",
+            "mae": 5.89,
+            "rmse": 7.3,
+            "wape_pct": 16.01,
+            "interval_80_coverage_pct": null,
+            "interval_95_coverage_pct": null,
+            "eval_samples": 120,
+            "is_champion": false,
+            "is_baseline": true
+          },
+          {
+            "model_name": "Exponential Smoothing",
+            "mae": 7.76,
+            "rmse": 9.66,
+            "wape_pct": 21.1,
+            "interval_80_coverage_pct": null,
+            "interval_95_coverage_pct": null,
+            "eval_samples": 120,
+            "is_champion": false,
+            "is_baseline": false
+          },
+          {
+            "model_name": "AR-Lag Tabular (Challenger)",
+            "mae": 11.7,
+            "rmse": 13.59,
+            "wape_pct": 31.82,
+            "interval_80_coverage_pct": 94.2,
+            "interval_95_coverage_pct": 99.2,
+            "eval_samples": 120,
+            "is_champion": false,
+            "is_baseline": false
+          },
+          {
+            "model_name": "Chronos-2 (Champion)",
+            "mae": 7.16,
+            "rmse": 8.47,
+            "wape_pct": 19.46,
+            "interval_80_coverage_pct": 92.5,
+            "interval_95_coverage_pct": 97.5,
+            "eval_samples": 120,
+            "is_champion": true,
+            "is_baseline": false
+          }
+        ],
+        "generated_at": "2026-10-25T06:36:14.063253+00:00",
+        "selection_rule": "Champion selection requires calibrated quantile intervals (risk-engine dependency) alongside competitive point accuracy; point-only models (Seasonal-Naive, Exponential Smoothing) are excluded from selection by design.",
+        "honest_notes": [
+          "Seasonal-Naive posts the lowest point error (MAE \u20b95.89/kg vs champion \u20b97.16/kg) but emits no calibrated interval \u2014 the production champion must produce quantile bands because the risk engine and probability sheet depend on them."
+        ]
+      }
+    },
+    "state_maharashtra": {
+      "14": {
+        "status": "COMPLETED",
+        "horizon_tested": 14,
+        "n_folds": 4,
+        "winning_model": "Chronos-2 (Champion)",
+        "chronos_skill_vs_naive_pct": 6.0,
+        "scale_note": "errors in \u20b9/kg (\u20b9 per kilogram, quintal/100)",
+        "note": null,
+        "models": [
+          {
+            "model_name": "Seasonal-Naive",
+            "mae": 3.16,
+            "rmse": 3.78,
+            "wape_pct": 8.83,
+            "interval_80_coverage_pct": null,
+            "interval_95_coverage_pct": null,
+            "eval_samples": 56,
+            "is_champion": false,
+            "is_baseline": true
+          },
+          {
+            "model_name": "Exponential Smoothing",
+            "mae": 3.69,
+            "rmse": 4.5,
+            "wape_pct": 10.3,
+            "interval_80_coverage_pct": null,
+            "interval_95_coverage_pct": null,
+            "eval_samples": 56,
+            "is_champion": false,
+            "is_baseline": false
+          },
+          {
+            "model_name": "AR-Lag Tabular (Challenger)",
+            "mae": 4.49,
+            "rmse": 5.7,
+            "wape_pct": 12.53,
+            "interval_80_coverage_pct": 67.9,
+            "interval_95_coverage_pct": 98.2,
+            "eval_samples": 56,
+            "is_champion": false,
+            "is_baseline": false
+          },
+          {
+            "model_name": "Chronos-2 (Champion)",
+            "mae": 2.97,
+            "rmse": 3.56,
+            "wape_pct": 8.28,
+            "interval_80_coverage_pct": 94.6,
+            "interval_95_coverage_pct": 98.2,
+            "eval_samples": 56,
+            "is_champion": true,
+            "is_baseline": false
+          }
+        ],
+        "generated_at": "2026-10-25T06:36:15.126538+00:00",
+        "selection_rule": "Champion selection requires calibrated quantile intervals (risk-engine dependency) alongside competitive point accuracy; point-only models (Seasonal-Naive, Exponential Smoothing) are excluded from selection by design.",
+        "honest_notes": []
+      },
+      "30": {
+        "status": "COMPLETED",
+        "horizon_tested": 30,
+        "n_folds": 4,
+        "winning_model": "Chronos-2 (Champion)",
+        "chronos_skill_vs_naive_pct": 15.0,
+        "scale_note": "errors in \u20b9/kg (\u20b9 per kilogram, quintal/100)",
+        "note": null,
+        "models": [
+          {
+            "model_name": "Seasonal-Naive",
+            "mae": 5.68,
+            "rmse": 6.98,
+            "wape_pct": 15.46,
+            "interval_80_coverage_pct": null,
+            "interval_95_coverage_pct": null,
+            "eval_samples": 120,
+            "is_champion": false,
+            "is_baseline": true
+          },
+          {
+            "model_name": "Exponential Smoothing",
+            "mae": 5.23,
+            "rmse": 6.4,
+            "wape_pct": 14.25,
+            "interval_80_coverage_pct": null,
+            "interval_95_coverage_pct": null,
+            "eval_samples": 120,
+            "is_champion": false,
+            "is_baseline": false
+          },
+          {
+            "model_name": "AR-Lag Tabular (Challenger)",
+            "mae": 13.42,
+            "rmse": 15.1,
+            "wape_pct": 36.55,
+            "interval_80_coverage_pct": 18.3,
+            "interval_95_coverage_pct": 43.3,
+            "eval_samples": 120,
+            "is_champion": false,
+            "is_baseline": false
+          },
+          {
+            "model_name": "Chronos-2 (Champion)",
+            "mae": 4.83,
+            "rmse": 6.33,
+            "wape_pct": 13.16,
+            "interval_80_coverage_pct": 93.3,
+            "interval_95_coverage_pct": 99.2,
+            "eval_samples": 120,
+            "is_champion": true,
+            "is_baseline": false
+          }
+        ],
+        "generated_at": "2026-10-25T06:36:16.140974+00:00",
+        "selection_rule": "Champion selection requires calibrated quantile intervals (risk-engine dependency) alongside competitive point accuracy; point-only models (Seasonal-Naive, Exponential Smoothing) are excluded from selection by design.",
+        "honest_notes": []
+      }
+    },
+    "state_karnataka": {
+      "14": {
+        "status": "COMPLETED",
+        "horizon_tested": 14,
+        "n_folds": 4,
+        "winning_model": "Chronos-2 (Champion)",
+        "chronos_skill_vs_naive_pct": -6.7,
+        "scale_note": "errors in \u20b9/kg (\u20b9 per kilogram, quintal/100)",
+        "note": null,
+        "models": [
+          {
+            "model_name": "Seasonal-Naive",
+            "mae": 4.34,
+            "rmse": 6.46,
+            "wape_pct": 11.67,
+            "interval_80_coverage_pct": null,
+            "interval_95_coverage_pct": null,
+            "eval_samples": 56,
+            "is_champion": false,
+            "is_baseline": true
+          },
+          {
+            "model_name": "Exponential Smoothing",
+            "mae": 5.42,
+            "rmse": 7.8,
+            "wape_pct": 14.59,
+            "interval_80_coverage_pct": null,
+            "interval_95_coverage_pct": null,
+            "eval_samples": 56,
+            "is_champion": false,
+            "is_baseline": false
+          },
+          {
+            "model_name": "AR-Lag Tabular (Challenger)",
+            "mae": 5.66,
+            "rmse": 6.64,
+            "wape_pct": 15.23,
+            "interval_80_coverage_pct": 92.9,
+            "interval_95_coverage_pct": 94.6,
+            "eval_samples": 56,
+            "is_champion": false,
+            "is_baseline": false
+          },
+          {
+            "model_name": "Chronos-2 (Champion)",
+            "mae": 4.63,
+            "rmse": 7.22,
+            "wape_pct": 12.47,
+            "interval_80_coverage_pct": 80.4,
+            "interval_95_coverage_pct": 87.5,
+            "eval_samples": 56,
+            "is_champion": true,
+            "is_baseline": false
+          }
+        ],
+        "generated_at": "2026-10-25T06:36:17.183641+00:00",
+        "selection_rule": "Champion selection requires calibrated quantile intervals (risk-engine dependency) alongside competitive point accuracy; point-only models (Seasonal-Naive, Exponential Smoothing) are excluded from selection by design.",
+        "honest_notes": [
+          "Seasonal-Naive posts the lowest point error (MAE \u20b94.34/kg vs champion \u20b94.63/kg) but emits no calibrated interval \u2014 the production champion must produce quantile bands because the risk engine and probability sheet depend on them."
+        ]
+      },
+      "30": {
+        "status": "COMPLETED",
+        "horizon_tested": 30,
+        "n_folds": 4,
+        "winning_model": "Chronos-2 (Champion)",
+        "chronos_skill_vs_naive_pct": -12.2,
+        "scale_note": "errors in \u20b9/kg (\u20b9 per kilogram, quintal/100)",
+        "note": null,
+        "models": [
+          {
+            "model_name": "Seasonal-Naive",
+            "mae": 7.28,
+            "rmse": 9.33,
+            "wape_pct": 19.06,
+            "interval_80_coverage_pct": null,
+            "interval_95_coverage_pct": null,
+            "eval_samples": 120,
+            "is_champion": false,
+            "is_baseline": true
+          },
+          {
+            "model_name": "Exponential Smoothing",
+            "mae": 7.41,
+            "rmse": 9.43,
+            "wape_pct": 19.39,
+            "interval_80_coverage_pct": null,
+            "interval_95_coverage_pct": null,
+            "eval_samples": 120,
+            "is_champion": false,
+            "is_baseline": false
+          },
+          {
+            "model_name": "AR-Lag Tabular (Challenger)",
+            "mae": 12.3,
+            "rmse": 14.05,
+            "wape_pct": 32.22,
+            "interval_80_coverage_pct": 92.5,
+            "interval_95_coverage_pct": 99.2,
+            "eval_samples": 120,
+            "is_champion": false,
+            "is_baseline": false
+          },
+          {
+            "model_name": "Chronos-2 (Champion)",
+            "mae": 8.17,
+            "rmse": 10.46,
+            "wape_pct": 21.4,
+            "interval_80_coverage_pct": 59.2,
+            "interval_95_coverage_pct": 70.0,
+            "eval_samples": 120,
+            "is_champion": true,
+            "is_baseline": false
+          }
+        ],
+        "generated_at": "2026-10-25T06:36:18.245739+00:00",
+        "selection_rule": "Champion selection requires calibrated quantile intervals (risk-engine dependency) alongside competitive point accuracy; point-only models (Seasonal-Naive, Exponential Smoothing) are excluded from selection by design.",
+        "honest_notes": [
+          "Seasonal-Naive posts the lowest point error (MAE \u20b97.28/kg vs champion \u20b98.17/kg) but emits no calibrated interval \u2014 the production champion must produce quantile bands because the risk engine and probability sheet depend on them.",
+          "Champion's 80% band under-covered in this fold mix (59.2%). For buffer planning at this horizon, plan on the 95% band until district-level features enable retraining."
+        ]
+      }
+    },
+    "state_madhya_pradesh": {
+      "14": {
+        "status": "COMPLETED",
+        "horizon_tested": 14,
+        "n_folds": 4,
+        "winning_model": "Chronos-2 (Champion)",
+        "chronos_skill_vs_naive_pct": 23.5,
+        "scale_note": "errors in \u20b9/kg (\u20b9 per kilogram, quintal/100)",
+        "note": null,
+        "models": [
+          {
+            "model_name": "Seasonal-Naive",
+            "mae": 3.27,
+            "rmse": 4.55,
+            "wape_pct": 11.94,
+            "interval_80_coverage_pct": null,
+            "interval_95_coverage_pct": null,
+            "eval_samples": 56,
+            "is_champion": false,
+            "is_baseline": true
+          },
+          {
+            "model_name": "Exponential Smoothing",
+            "mae": 4.37,
+            "rmse": 5.71,
+            "wape_pct": 15.97,
+            "interval_80_coverage_pct": null,
+            "interval_95_coverage_pct": null,
+            "eval_samples": 56,
+            "is_champion": false,
+            "is_baseline": false
+          },
+          {
+            "model_name": "AR-Lag Tabular (Challenger)",
+            "mae": 3.17,
+            "rmse": 3.87,
+            "wape_pct": 11.58,
+            "interval_80_coverage_pct": 98.2,
+            "interval_95_coverage_pct": 100.0,
+            "eval_samples": 56,
+            "is_champion": false,
+            "is_baseline": false
+          },
+          {
+            "model_name": "Chronos-2 (Champion)",
+            "mae": 2.5,
+            "rmse": 3.54,
+            "wape_pct": 9.15,
+            "interval_80_coverage_pct": 89.3,
+            "interval_95_coverage_pct": 91.1,
+            "eval_samples": 56,
+            "is_champion": true,
+            "is_baseline": false
+          }
+        ],
+        "generated_at": "2026-10-25T06:36:19.316161+00:00",
+        "selection_rule": "Champion selection requires calibrated quantile intervals (risk-engine dependency) alongside competitive point accuracy; point-only models (Seasonal-Naive, Exponential Smoothing) are excluded from selection by design.",
+        "honest_notes": []
+      },
+      "30": {
+        "status": "COMPLETED",
+        "horizon_tested": 30,
+        "n_folds": 4,
+        "winning_model": "Chronos-2 (Champion)",
+        "chronos_skill_vs_naive_pct": -17.9,
+        "scale_note": "errors in \u20b9/kg (\u20b9 per kilogram, quintal/100)",
+        "note": null,
+        "models": [
+          {
+            "model_name": "Seasonal-Naive",
+            "mae": 5.02,
+            "rmse": 6.43,
+            "wape_pct": 17.99,
+            "interval_80_coverage_pct": null,
+            "interval_95_coverage_pct": null,
+            "eval_samples": 120,
+            "is_champion": false,
+            "is_baseline": true
+          },
+          {
+            "model_name": "Exponential Smoothing",
+            "mae": 4.89,
+            "rmse": 6.36,
+            "wape_pct": 17.51,
+            "interval_80_coverage_pct": null,
+            "interval_95_coverage_pct": null,
+            "eval_samples": 120,
+            "is_champion": false,
+            "is_baseline": false
+          },
+          {
+            "model_name": "AR-Lag Tabular (Challenger)",
+            "mae": 8.23,
+            "rmse": 9.4,
+            "wape_pct": 29.49,
+            "interval_80_coverage_pct": 96.7,
+            "interval_95_coverage_pct": 99.2,
+            "eval_samples": 120,
+            "is_champion": false,
+            "is_baseline": false
+          },
+          {
+            "model_name": "Chronos-2 (Champion)",
+            "mae": 5.92,
+            "rmse": 7.22,
+            "wape_pct": 21.21,
+            "interval_80_coverage_pct": 55.8,
+            "interval_95_coverage_pct": 70.8,
+            "eval_samples": 120,
+            "is_champion": true,
+            "is_baseline": false
+          }
+        ],
+        "generated_at": "2026-10-25T06:36:20.303483+00:00",
+        "selection_rule": "Champion selection requires calibrated quantile intervals (risk-engine dependency) alongside competitive point accuracy; point-only models (Seasonal-Naive, Exponential Smoothing) are excluded from selection by design.",
+        "honest_notes": [
+          "Exponential Smoothing posts the lowest point error (MAE \u20b94.89/kg vs champion \u20b95.92/kg) but emits no calibrated interval \u2014 the production champion must produce quantile bands because the risk engine and probability sheet depend on them.",
+          "Champion's 80% band under-covered in this fold mix (55.8%). For buffer planning at this horizon, plan on the 95% band until district-level features enable retraining."
+        ]
+      }
+    }
+  }
+}

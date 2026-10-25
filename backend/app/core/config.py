@@ -16,10 +16,16 @@ class Settings(BaseSettings):
     # Environment & Production status
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "production")
     DEMO_MODE: bool = False
-    DATA_MODE_LABEL: str = "LIVE FEED • AP CIVIL SUPPLIES & APMC INTEGRATED FABRIC"
+    DATA_MODE_LABEL: str = "REAL INGESTED DATA • AGMARKNET-derived AP state series (2022-2026), IMD weather context"
     
-    # Persistence
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./ap_commodities.db")
+    # Persistence — ABSOLUTE path anchored to the backend/ directory so any
+    # process (uvicorn, scripts, notebooks) resolves the SAME SQLite file
+    # regardless of the working directory it was launched from.
+    _BACKEND_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    DATABASE_URL: str = os.getenv(
+        "DATABASE_URL",
+        "sqlite:///" + os.path.join(_BACKEND_DIR, "ap_commodities.db").replace("\\", "/")
+    )
     
     # CORS
     BACKEND_CORS_ORIGINS: List[str] = ["*"]
@@ -30,9 +36,39 @@ class Settings(BaseSettings):
     ONION_CRISIS_THRESHOLD: float = 50.00   # ₹/kg acute crisis threshold
     ONION_MAX_INTERVENTION_CAP: float = 65.00 # ₹/kg runaway threshold
     
-    # Target Markets
-    PILOT_MARKET_ID: str = "mandi_kurnool"
+    # Pilot geography = the real ingested state series (district data is a
+    # roadmap item; mandi_kurnool remains registered as a reference site).
+    PILOT_MARKET_ID: str = "state_andhra_pradesh"
     PILOT_COMMODITY_ID: str = "onion"
+
+    # --- Real data & demo-mode settings -----------------------------------
+    # Synthetic seeding is OFF by default: startup ingests the real curated
+    # dataset instead (see app/data/ingest_real.py).
+    SEED_SYNTHETIC: bool = os.getenv("SEED_SYNTHETIC", "false").lower() in ("1", "true", "yes")
+    REAL_DATA_CSV: str = os.getenv(
+        "REAL_DATA_CSV",
+        os.path.join(os.path.expanduser("~"), "OneDrive", "Desktop",
+                     "AP_Onion_Dataset_2022_2026_Production.csv")
+    )
+
+    # --- Local LLM (agentic chat) ------------------------------------------
+    # NOTE: OLLAMA_MODEL must fit the demo machine's RAM. 14B needs ~10GB and
+    # crashed on a 7.5GB box (CPU_REPACK alloc failure) — 3B (~2.3GB) is safe.
+    OLLAMA_HOST: str = os.getenv("OLLAMA_HOST", "http://localhost:11434")
+    OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "qwen2.5:3b-instruct")
+
+    # --- Web fallback (Market Agent escalation) -----------------------------
+    TAVILY_API_KEY: str = os.getenv("TAVILY_API_KEY", "")
+    WEB_TRUST_DOMAINS: List[str] = [
+        # Government / official market data
+        "agmarknet.gov.in", "dfpd.gov.in", "consumeraffairs.nic.in",
+        "imdagrimet.gov.in", "maurdyog.mahaonline.gov.in",
+        "nafed-india.com", "pib.gov.in",
+        # News-of-record national outlets (current market context tier)
+        "business-standard.com", "economictimes.indiatimes.com",
+        "livemint.com", "moneycontrol.com", "thehindubusinessline.com",
+        "newindianexpress.com", "downtoearth.org.in",
+    ]
     
     # Model settings
     DEFAULT_FORECAST_HORIZONS: List[int] = [7, 14, 30, 60, 90]

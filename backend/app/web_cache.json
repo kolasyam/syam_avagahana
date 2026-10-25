@@ -1,0 +1,125 @@
+{
+  "onion prices India mandi market news rupees per kg today": {
+    "status": "WEB_RESULTS",
+    "query": "onion prices India mandi market news rupees per kg today",
+    "results": [
+      {
+        "title": "Onion Price Today: Azadpur mandi price falls, no relief in ...",
+        "url": "https://www.business-standard.com/india-news/onion-price-today-azadpur-mandi-price-falls-no-relief-in-retail-prices-123110200276_1.html",
+        "snippet": "The wholesale price of onions in Azadpur Mandi plunged to Rs 30-40 per kg. s 30-40 per kg as compared to 60-65 per kg last week. roughly",
+        "trust": "APPROVED_TRUST_SOURCE",
+        "extracted_prices": [
+          "\u20b930"
+        ]
+      },
+      {
+        "title": "No shortage of onion in domestic market, mandi prices fall ...",
+        "url": "https://www.moneycontrol.com/news/india/no-shortage-of-onion-in-domestic-market-mandi-prices-fall-9-in-nine-days-says-consumer-affairs-secy-14031345.html",
+        "snippet": "No shortage of onion in domestic market, mandi prices fall 9% in nine days, says \u2026 make onions available to consumers at Rs 35 per kg. mandi",
+        "trust": "APPROVED_TRUST_SOURCE",
+        "extracted_prices": [
+          "\u20b935/kg"
+        ]
+      },
+      {
+        "title": "Why Onion and Potato Prices Stay High for Consumers Even as Farmers Dump Crops",
+        "url": "https://www.downtoearth.org.in/agriculture/onions-dumped-potato-crops-destroyed-why-falling-farm-prices-are-not-lowering-retail-food-bills",
+        "snippet": "Farmers in several states are dumping onions, destroying potato crops and discarding tomatoes after mandi prices fell sharply despite rising food inflation.\n Food inflation rose from 3.87% in March 2026 to 4.20% in April 2026, while consumers continued to pay elevated retail prices for onions, potatoes and tomatoes.\n Government data shows the all-India average retail price of onion rose to \u20b925.36 ",
+        "trust": "APPROVED_TRUST_SOURCE",
+        "extracted_prices": [
+          "\u20b925.36/kg",
+          "\u20b95",
+          "\u20b97/kg",
+          "\u20b920.86/kg",
+          "\u20b919.06/kg"
+        ]
+      },
+      {
+        "title": "Onion prices up 59%, govt ramps up 'Kanda Express ...",
+        "url": "https://economictimes.indiatimes.com/news/economy/agriculture/onion-prices-up-59-govt-ramps-up-kanda-express-supplies-to-cool-market/articleshow/133470425.cms",
+        "snippet": "Among major cities, retail onion prices on Monday stood at Rs 60/kg ... Onion will be sold at Rs 35 per kg in the retail market through agencies",
+        "trust": "APPROVED_TRUST_SOURCE",
+        "extracted_prices": [
+          "\u20b960/kg",
+          "\u20b935/kg"
+        ]
+      },
+      {
+        "title": "Average onion price in Delhi touches \u20b978, it declines by ...",
+        "url": "https://www.livemint.com/industry/agriculture/onion-price-rise-update-delhi-maharashtra-average-price-government-action-impact-11698675084300.html",
+        "snippet": "The minimum rate was \u20b917 per kg, the maximum rate was \u20b983 per kg and the modal price was \u20b960 per kg, news agency PTI reported while citing",
+        "trust": "APPROVED_TRUST_SOURCE",
+        "extracted_prices": [
+          "\u20b917/kg",
+          "\u20b983/kg",
+          "\u20b960/kg"
+        ]
+      }
+    ],
+    "trust_summary": {
+      "approved": 5,
+      "unverified": 0
+    },
+    "governance": {
+      "web_data_ingested_into_model": false,
+      "note": "Web results are citation-only. Model ingestion requires trust-whitelisted source + human verification (roadmap item)."
+    }
+  },
+  "onion mandi arrivals quantity metric tons supply india market today": {
+    "status": "WEB_RESULTS",
+    "query": "onion mandi arrivals quantity metric tons supply india market today",
+    "results": [
+      {
+        "title": "Press Release Page | Press Information Bureau",
+        "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2267611&reg=3&lang=2",
+        "snippet": "target of 2 LMT for onion in 2026-27. Procurement commenced on May 15 and is expected to support mandi prices and help moderate price volatility. To further encourage timely procurement amid rising arrivals, the procurement price was increased with effect from May 26, 2026.   + Prices of food commodities are stable.Price trends across key food categories such as cereals, milk, pulses and sugar con",
+        "trust": "APPROVED_TRUST_SOURCE",
+        "extracted_prices": []
+      },
+      {
+        "title": "Press Release Page | Press Information Bureau",
+        "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2251543",
+        "snippet": "| Key Takeaways    1,656 mandis integrated across 23 States and 4 Union Territories by March 2026.  Over 1.80 crore farmers, 2.73 lakh traders, and 4,724 Farmer-Producer Organizations were registered on the eNAM platform by March, 2026.  Cumulative trade of 13.25 crore metric tonnes, with a total value of \u20b94.84 lakh crore, recorded between 2016 and March, 2026.  Trade value increased from \u20b93.19 la",
+        "trust": "APPROVED_TRUST_SOURCE",
+        "extracted_prices": [
+          "\u20b94.84",
+          "\u20b93.19",
+          "\u20b94.84",
+          "\u20b94.84",
+          "\u20b93.19"
+        ]
+      },
+      {
+        "title": "Press Release Page | Press Information Bureau",
+        "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2245639&reg=3&lang=1",
+        "snippet": "The e-National Agriculture Market (e-NAM) is a pan-India electronic trading portal designed to integrate existing APMC (Agricultural Produce Market Committee) mandis across the country into a unified online platform, enabling \u201cOne Nation One Market\u201d for agricultural commodities. The platform streamlines agricultural marketing by offering single-window services such as commodity arrivals, AI-based ",
+        "trust": "APPROVED_TRUST_SOURCE",
+        "extracted_prices": []
+      },
+      {
+        "title": "draft red herring prospectus",
+        "url": "https://images.moneycontrol.com/news_html_files/pdffiles/Sep2026/m-k-c-agro.pdf",
+        "snippet": "Actual Processing / Throughput MT 26.19 26.31 26.60 Capacity Utilisation % 87.30% 87.69% 88.67% 263  As certified by Vishal Gupta, Chartered Engineer (Reg. No. AM096630-7), Shrey Engineering Services, New Delhi. Certificate dated July 9, 2026. PRODUCTION / PROCESSING PROCESS Mandi Operations - Sahibabad and Azadpur The Company operates as a trader at its APMC mandi facilities at Sahibabad, Ghaziab",
+        "trust": "APPROVED_TRUST_SOURCE",
+        "extracted_prices": [
+          "\u20b924"
+        ]
+      },
+      {
+        "title": "EconomicSurvey2023Q44O.pdf",
+        "url": "https://static.pib.gov.in/WriteReadData/userfiles/file/EconomicSurvey2023Q44O.pdf",
+        "snippet": "Marketing Season (KMS) 2021 -22, 581.7 lakh metric tons (LMT) of Rice was procured against \n\nan est imated target of 532.7 LMT. In the current year, KMS 2022 -23, a total of 355 LMT of \n\nrice has been procured up to 31 December 2022. 126 \n\nUnder the PM Garib Kalyan Anna Yojana, the Government allocated about 1,118 LMT \n\nfoodgrains to the States/UTs to ease the hardships faced by the poor during th",
+        "trust": "APPROVED_TRUST_SOURCE",
+        "extracted_prices": []
+      }
+    ],
+    "trust_summary": {
+      "approved": 5,
+      "unverified": 0
+    },
+    "governance": {
+      "web_data_ingested_into_model": false,
+      "note": "Web results are citation-only. Model ingestion requires trust-whitelisted source + human verification (roadmap item)."
+    }
+  }
+}

@@ -141,12 +141,14 @@ class ConnectorHealthOut(BaseModel):
     connector_id: str
     name: str
     family: str
-    status: str # HEALTHY_DEMO, VERIFIED_LIVE, EXPERIMENTAL, DEGRADED
-    freshness_hours: float
-    records_count: int
-    quality_score: float
+    status: str # INGESTED_ACTIVE, READY, CONFIG_NOT_SET, ROADMAP_NOT_INGESTED, DEGRADED
+    freshness_hours: Optional[float] = None          # None when batch/static (no live feed)
+    records_count: int = 0
+    quality_score: Optional[float] = None
     mode_label: str
-    last_sync: str
+    last_sync: Optional[str] = None                   # None = no live sync yet
+    note: Optional[str] = None
+    source: str = "REAL"                              # REAL | SYNTHETIC demo marker
 
 class AgentStepTrace(BaseModel):
     step_id: str

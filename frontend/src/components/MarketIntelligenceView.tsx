@@ -115,7 +115,7 @@ export const MarketIntelligenceView: React.FC<MarketIntelligenceViewProps> = ({
 
             <span style={{ color: "rgba(0, 0, 0, 0.12)" }}>|</span>
 
-            {/* Mandi Dropdown */}
+            {/* Geography Dropdown — real series geos first, reference sites annotated */}
             <select
               value={selectedGeography}
               onChange={(e) => setSelectedGeography(e.target.value)}
@@ -130,11 +130,15 @@ export const MarketIntelligenceView: React.FC<MarketIntelligenceViewProps> = ({
                 cursor: "pointer"
               }}
             >
-              {geographies.map((g) => (
-                <option key={g.id} value={g.id}>
-                  {g.name} ({g.district})
-                </option>
-              ))}
+              {geographies.map((g) => {
+                const isReference = (g.market_type || "").includes("Reference");
+                const label = isReference ? `${g.name} — reference site (no data yet)` : g.name;
+                return (
+                  <option key={g.id} value={g.id} disabled={isReference && !selectedGeography.startsWith("mandi_")}>
+                    {label}
+                  </option>
+                );
+              })}
             </select>
 
             <span style={{ color: "rgba(0, 0, 0, 0.12)" }}>|</span>

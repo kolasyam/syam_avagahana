@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./styles/tokens.css";
 import { Navbar } from "./components/Navbar";
 import { WorkspaceView } from "./components/WorkspaceView";
+import { ChatPanel } from "./components/ChatPanel";
 import { MarketIntelligenceView } from "./components/MarketIntelligenceView";
 import { ForecastRiskView } from "./components/ForecastRiskView";
 import { ScenarioLabView } from "./components/ScenarioLabView";
@@ -16,7 +17,7 @@ export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("workspace");
   const [geographies, setGeographies] = useState<Geography[]>([]);
   const [commodities, setCommodities] = useState<Commodity[]>([]);
-  const [selectedGeography, setSelectedGeography] = useState<string>("mandi_kurnool");
+  const [selectedGeography, setSelectedGeography] = useState<string>("state_andhra_pradesh");
   const [selectedCommodity, setSelectedCommodity] = useState<string>("onion");
   const [sharedHorizon, setSharedHorizon] = useState<number>(14);
 
@@ -58,6 +59,12 @@ export const App: React.FC = () => {
             onNavigateTab={setActiveTab}
             onNavigateForecast={navigateToForecast}
           />
+        )}
+
+        {activeTab === "agentic-chat" && (
+          <div style={{ maxWidth: "960px", margin: "0 auto" }}>
+            <ChatPanel geographyId={selectedGeography} />
+          </div>
         )}
 
         {activeTab === "market" && (
@@ -133,7 +140,7 @@ export const App: React.FC = () => {
             </div>
           </div>
           <div style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "11.5px" }}>
-            AGMARKNET • e-NAM • IMD Doppler Telemetry • NAFED PSF Reserve Ledgers
+            AGMARKNET Curated Series • IMD Context • Tavily Web Fallback (citation-only) • Local LLM (Ollama)
           </div>
         </div>
       </footer>

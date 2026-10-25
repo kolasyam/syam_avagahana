@@ -213,3 +213,71 @@ export async function streamInvestigation(
     onError(err);
   }
 }
+
+/* ------------------------------- Agentic Chat ------------------------------ */
+
+export interface ChatSseFrame {
+  event: string;
+  data: any;
+}
+
+export async function fetchChatHealth(): Promise<any> {
+  const res = await fetch(`${BASE_URL}/chat/health`);
+  if (!res.ok) return { status: "OFFLINE" };
+  return res.json();
+}
+
+export async function streamChat(
+  message: string,
+  history: Array<{ role: string; content: string }>,
+  onFrame: (frame: ChatSseFrame) => void,
+  onComplete: () => void,
+  onError: (err: any) => void
+) {
+  try {
+    const res = await fetch(`${BASE_URL}/chat/stream`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message, history })
+    });
+
+    if (!res.ok || !res.body) {
+      throw new Error("Chat stream failed to connect");
+    }
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+
+      const frames = buffer.split("\n\n");
+      buffer = frames.pop() || "";
+
+      for (const frame of frames) {
+        const lines = frame.split("\n");
+        let eventType = "message";
+        let dataRaw = "";
+        for (const ln of lines) {
+          if (ln.startsWith("event: ")) eventType = ln.slice(7).trim();
+          else if (ln.startsWith("data: ")) dataRaw += ln.slice(6);
+        }
+        if (dataRaw) onFrame({ event: eventType, data: dataRaw });
+      }
+    }
+    onComplete();
+  } catch (err) {
+    onError(err);
+  }
+}
+
+export function parseChatFrame(raw: any): { event: string; data: any } {
+  try {
+    return { event: raw.event, data: JSON.parse(raw.data) };
+  } catch {
+    return { event: raw.event, data: raw.data };
+  }
+}
