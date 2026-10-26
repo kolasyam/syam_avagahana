@@ -1,0 +1,6 @@
+# Restart the server cleanly from the BACKEND folder (not repo root)
+# Copy and run this in PowerShell:
+
+$env:TAVILY_API_KEY='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'
+$env:PYTHONPATH='.'
+python -m uvicorn app.main:app --port 8000

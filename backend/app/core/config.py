@@ -51,7 +51,24 @@ class Settings(BaseSettings):
                      "AP_Onion_Dataset_2022_2026_Production.csv")
     )
 
-    # --- Local LLM (agentic chat) ------------------------------------------
+    # --- LLM provider (agentic chat) ---------------------------------------
+    # Primary = OSS-20B over an OpenAI-compatible API; local Ollama is the
+    # automatic fallback so the demo survives an API hiccup. The rule-based
+    # deterministic path is the last resort (honest, labelled, never fake).
+    # Set LLM_PROVIDER=ollama to force local-only (offline rehearsal).
+    LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", "openai_api")  # "openai_api" | "ollama"
+    LLM_FALLBACK_TO_OLLAMA: bool = os.getenv(
+        "LLM_FALLBACK_TO_OLLAMA", "true"
+    ).lower() in ("1", "true", "yes")
+
+    # Primary: OpenAI-compatible API serving an open-weight OSS model.
+    # Default = Groq (openai/gpt-oss-20b, ~1000 tps). Works with any
+    # /chat/completions endpoint — swap base+model for OpenAI, OpenRouter,
+    # Together, Fireworks, vLLM, etc.
+    OPENAI_API_BASE: str = os.getenv("OPENAI_API_BASE", "https://api.groq.com/openai/v1")
+    OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", os.getenv("GROQ_API_KEY", ""))
+    OPENAI_MODEL: str = os.getenv("OPENAI_MODEL", "openai/gpt-oss-20b")
+
     # NOTE: OLLAMA_MODEL must fit the demo machine's RAM. 14B needs ~10GB and
     # crashed on a 7.5GB box (CPU_REPACK alloc failure) — 3B (~2.3GB) is safe.
     OLLAMA_HOST: str = os.getenv("OLLAMA_HOST", "http://localhost:11434")

@@ -117,6 +117,11 @@ def latest_price(db: Session, geography_id: str = "state_andhra_pradesh") -> Dic
         "recommend_web_fallback": stale,
         "alert_threshold": alert,
         "presentation_hints": {
+            "date_context": (
+                f"The ingested series ends on {row.date}. If the user asks for a date "
+                f"after {row.date}, say clearly: 'No ingested data for that date; "
+                f"quoting latest real observation from {row.date}.' Never invent a price."
+            ),
             "alert_positioning": (
                 f"Quote exactly: latest ingested price ₹{row.modal_price:.2f}/kg is "
                 f"{('ABOVE' if row.modal_price >= alert else 'BELOW')} the alert "

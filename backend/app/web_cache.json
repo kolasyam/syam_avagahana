@@ -121,5 +121,13 @@
       "web_data_ingested_into_model": false,
       "note": "Web results are citation-only. Model ingestion requires trust-whitelisted source + human verification (roadmap item)."
     }
+  },
+  "onion price today Andhra Pradesh mandi \u20b9/kg": {
+    "status": "WEB_SEARCH_UNAVAILABLE",
+    "error": "TAVILY_API_KEY not configured. Web fallback disabled; answer limited to ingested local series.",
+    "results": [],
+    "governance": {
+      "web_data_ingested_into_model": false
+    }
   }
 }

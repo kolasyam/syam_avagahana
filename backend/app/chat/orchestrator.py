@@ -3,7 +3,7 @@ Agentic Chat Orchestrator (SSE)
 ===============================
 Implements the architecture diagram end-to-end:
 
-  Chat input → LLM router (settings.OLLAMA_MODEL = qwen2.5:3b-instruct, local Ollama) → Agents (tool loop)
+  Chat input → LLM router (OSS-20B over OpenAI-compatible API; Ollama fallback) → Agents (tool loop)
       Market Agent   → search_local_prices / latest_price / get_regions / web_lookup
       Forecast Agent → run_forecast / forecast_with_factor (real Chronos-2)
       Analysis Agent → get_risk
@@ -32,7 +32,9 @@ from typing import Any, Dict, Generator, List, Optional
 
 from sqlalchemy.orm import Session
 
-from app.chat.llm import chat_completion, check_health, OllamaUnavailableError
+from app.chat.llm import (
+    chat_completion, check_health, OllamaUnavailableError, active_backend_label,
+)
 from app.chat.tools import OPENAI_TOOL_SCHEMAS, TOOL_REGISTRY
 from app.chat.guardrails import (
     CAT_PII,
@@ -72,6 +74,13 @@ DATA RULES (strict):
 
 CONVERSATION RULES:
 - Keep answers tight (<=120 words), structured, and decision-useful for an officer.
+- GEOGRAPHY FOCUS (strict for this demo): when the user asks specifically about
+  Andhra Pradesh (`state_andhra_pradesh`) or any AP mandi, your answer must
+  quote ONLY AP-level ingested data and AP-relevant web citations. Do NOT
+  quote Delhi/Azadpur, MH, KA, or MP prices unless the user explicitly asks
+  for a comparison. If web results contain only national/non-AP citations,
+  say so honestly ("No AP-specific web citations found; quoting ingested AP
+  series only.") instead of substituting non-AP evidence.
 - For forecasts, summarize: cutoff, key projected values with bands, breach probabilities vs ₹35/kg (alert) and ₹50/kg (crisis), and what drives them.
 - For add-factor questions ("what if rainfall next year is..."), call forecast_with_factor with a sensible variable and value; if the user hasn't given a number, ask a short clarifying question instead of guessing.
 - End with the source types you used, e.g. (Avagahana ingested series · cutoff 2026-10-15) or (Web: pib.gov.in — unverified citation).
@@ -247,7 +256,7 @@ def stream_chat(
         return
 
     yield sse("agent", {"agent": "Router", "status": "running",
-                        "detail": f"LLM: {settings.OLLAMA_MODEL} (local Ollama)"})
+                        "detail": f"LLM: {active_backend_label()}"})
 
     messages: List[Dict[str, Any]] = [{"role": "system", "content": SYSTEM_PROMPT}]
     for h in (history or [])[-6:]:
@@ -260,7 +269,7 @@ def stream_chat(
     try:
         # ---------------- Agent tool loop (LLM-driven) --------------------
         for step in range(MAX_TOOL_STEPS):
-            response = chat_completion(messages, tools=OPENAI_TOOL_SCHEMAS, temperature=0.2)
+            response = chat_completion(messages, tools=OPENAI_TOOL_SCHEMAS, temperature=0.2, _retries=0)
             choice = response["choices"][0]
             msg = choice["message"]
 
@@ -307,9 +316,20 @@ def stream_chat(
                 executed_tools.append(name)
                 yield sse("tool", {"tool": name, "status": "completed", "summary": _tool_summary(result)})
 
-                # Citation collection
+                # Citation collection — with AP-relevance filter when user asks about AP
+                msg_text = (message or "").lower()
+                ap_mentioned = any(w in msg_text for w in ("andhra", "pradesh", "ap ", "kurnool", "kadapa", "vijayawada", "tirupati", "visakhapatnam"))
                 if name == "web_lookup":
                     for r in result.get("results", []):
+                        title = (r.get("title") or "").lower()
+                        url = (r.get("url") or "").lower()
+                        # Filter non-AP citations when user specifically asks about AP
+                        if ap_mentioned:
+                            ap_signals = ("andhra", "pradesh", "kurnool", "kadapa", "vijayawada", "tirupati", "visakhapatnam", "agmarknet", "ap ")
+                            non_ap_signals = ("delhi", "azadpur", "mumbai", "maharashtra", "bangalore", "karnataka", "indore", "madhya", "all-india")
+                            # If citation clearly references another region/state, skip it for AP-specific queries
+                            if any(s in title or s in url for s in non_ap_signals) and not any(s in title or s in url for s in ap_signals):
+                                continue
                         sources.append({
                             "type": "WEB", "trust": r.get("trust"), "url": r.get("url"),
                             "title": r.get("title"), "ingested": False,
@@ -421,7 +441,7 @@ def stream_chat(
         sguard = StreamingGuard()
         stream_halted = False
         try:
-            client_stream = chat_completion(messages, stream=True, temperature=0.2)
+            client_stream = chat_completion(messages, stream=True, temperature=0.2, _retries=0)
             for line in client_stream.iter_lines():
                 if not line:
                     continue
@@ -465,7 +485,7 @@ def stream_chat(
 
     duration = round(time.time() - t0, 2)
     run_meta = {
-        "model": settings.OLLAMA_MODEL if llm_ok else "rule-based-fallback",
+        "model": (active_backend_label() if llm_ok else "rule-based-fallback"),
         "llm_status": "LLM" if llm_ok else "FALLBACK",
         "agents": agent_sequence,
         "tools": executed_tools,
